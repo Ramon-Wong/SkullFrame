@@ -1,0 +1,7 @@
+<gresources>
+  <gresource prefix="/myapp">
+    <file>web/main.html</file>
+    <file>web/style/style.css</file>
+    <file>web/script/index.js</file>
+  </gresource>
+</gresources>
