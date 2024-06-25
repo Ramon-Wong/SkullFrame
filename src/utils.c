@@ -11,8 +11,8 @@ const gchar* get_file_extension(const gchar* path){
 }
 
 
-void list_resources(const gchar *path) {
-    GResource *resources = resources_get_resource();
+void list_resources( GResource * resources, const gchar *path) {
+    
     GError *error = NULL;
 
     // Enumerate children of the specified path
@@ -30,7 +30,7 @@ void list_resources(const gchar *path) {
 
         // Recursively list resources if it's a directory
         if (g_str_has_suffix(child_path, "/")) {
-            list_resources(child_path);
+            list_resources( resources, child_path);
         }
         // else{ 
         //     g_print(">>>this  is a file: %s \n", child_path);
