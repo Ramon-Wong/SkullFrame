@@ -100,6 +100,7 @@ int main(int argc, char** argv) {
     webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");               // use "resources:///myapp/web/Cow.html" to get /web/Cow.html
 
     gresources = resources_get_resource();
+    g_resources_register(gresources);
 
     list_resources( gresources, "/");
 
