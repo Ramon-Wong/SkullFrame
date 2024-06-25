@@ -101,8 +101,6 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
     if( g_strcmp0( Check_resources("/", path), path) == 0){
         g_print("found: %s \n\n", path); 
 
-        gsize size;
-
         GResource *resources = resources_get_resource();
         GBytes *bytes = g_resource_lookup_data ( resources,  path, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);       
 

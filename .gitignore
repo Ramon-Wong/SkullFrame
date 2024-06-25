@@ -1,3 +1,4 @@
 include/resources.h
 src/resources.c
 *.o
+.main
