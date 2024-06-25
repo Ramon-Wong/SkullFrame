@@ -11,8 +11,8 @@ const gchar* get_file_extension(const gchar* path){
 }
 
 
-void list_resources(const gchar *path) {
-    GResource *resources = resources_get_resource();
+void list_resources( GResource * resources, const gchar *path) {
+    
     GError *error = NULL;
 
     // Enumerate children of the specified path
@@ -30,7 +30,7 @@ void list_resources(const gchar *path) {
 
         // Recursively list resources if it's a directory
         if (g_str_has_suffix(child_path, "/")) {
-            list_resources(child_path);
+            list_resources( resources, child_path);
         }
         // else{ 
         //     g_print(">>>this  is a file: %s \n", child_path);
@@ -42,8 +42,8 @@ void list_resources(const gchar *path) {
 }
 
 
-const gchar* Check_resources(const gchar *path, const gchar *keyword) {
-    GResource *resources = resources_get_resource();
+const gchar* Check_resources(  GResource * resources, const gchar *path, const gchar *keyword) {
+
     GError *error = NULL;
 
     // Enumerate children of the specified path
@@ -66,7 +66,7 @@ const gchar* Check_resources(const gchar *path, const gchar *keyword) {
 
         // Recursively list resources if it's a directory
         if (g_str_has_suffix(child_path, "/")) {
-            const gchar *found_path = Check_resources(child_path, keyword);
+            const gchar *found_path = Check_resources( resources, child_path, keyword);
             if (found_path && g_strcmp0(found_path, "Not found") != 0) {
                 g_strfreev(children);
                 return found_path;

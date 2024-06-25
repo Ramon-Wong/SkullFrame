@@ -4,9 +4,7 @@
 
 
 
-
-
-
+GResource * gresources;
 
 
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
@@ -20,11 +18,10 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
     gsize data_length = 0;
     const gchar* mime_type = "text/html";
 
-    if( g_strcmp0( Check_resources("/", path), path) == 0){
+    if( g_strcmp0( Check_resources( gresources, "/", path), path) == 0){
         g_print("found: %s \n\n", path); 
 
-        GResource *resources = resources_get_resource();
-        GBytes *bytes = g_resource_lookup_data ( resources,  path, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);       
+        GBytes *bytes = g_resource_lookup_data( gresources,  path, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);       
 
         if(bytes){
             data = (const gchar*) g_bytes_get_data( bytes, &data_length);
@@ -32,38 +29,15 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
             g_bytes_unref(bytes);
 
             const gchar* file_extension = get_file_extension(path);
-            if (g_strcmp0(file_extension, "html") == 0) {               mime_type = "text/html";                g_print(" HTML");   data_length = strlen(data);
-                } else if (g_strcmp0(file_extension, "js") == 0) {      mime_type = "application/javascript";   g_print(" JS");     data_length = strlen(data);
-                } else if (g_strcmp0(file_extension, "css") == 0) {     mime_type = "text/css";                 g_print(" CSS");    data_length = strlen(data);
-                } else if (g_strcmp0(file_extension, "jpg") == 0 || g_strcmp0(file_extension, "jpeg") == 0) {   g_print(" JPEG");
+            if (g_strcmp0(file_extension, "html") == 0) {               mime_type = "text/html";                g_print("HTML");   data_length = strlen(data);
+                } else if (g_strcmp0(file_extension, "js") == 0) {      mime_type = "application/javascript";   g_print("JS");     data_length = strlen(data);
+                } else if (g_strcmp0(file_extension, "css") == 0) {     mime_type = "text/css";                 g_print("CSS");    data_length = strlen(data);
+                } else if (g_strcmp0(file_extension, "jpg") == 0 || g_strcmp0(file_extension, "jpeg") == 0) {   g_print("JPEG");
                 } else if (g_strcmp0(file_extension, "png") == 0) {     g_print(" PNG");
                 } else if (g_strcmp0(file_extension, "gif") == 0) {     g_print(" GIF");
             }
-
         }else{
             g_print("Failed to load resource.\n");
-        }
-    }else{
-
-        if (g_strcmp0(path, "/Cow.html") == 0) {
-            data = "<html><script type='text/javascript' src='resources://example/script/Cow.js'></script><body>Hello, this is Cow!</body></html>";
-            data_length = strlen(data);
-        } else if (g_strcmp0(path, "/Chicken.html") == 0) {
-            data = "<html><script type='text/javascript' src='resources://example/script/Chicken.js'></script><body>Hello, this is Chicken!</body></html>";
-            data_length = strlen(data);
-        } else if (g_strcmp0(path, "/script/Cow.js") == 0) {
-            data = "console.log('Cow script loaded, eat more cow');";
-            g_print("Loading cow script");        
-            data_length = strlen(data);
-            mime_type = "application/javascript";
-        } else if (g_strcmp0(path, "/script/Chicken.js") == 0) {
-            data = "console.log('Chicken script loaded');";
-            g_print("Loading chicken script");
-            data_length = strlen(data);
-            mime_type = "application/javascript";
-        } else {
-            data = "<html><body>Resource not found.</body></html>";
-            data_length = strlen(data);
         }
     }
 
@@ -96,7 +70,10 @@ int main(int argc, char** argv) {
 
     webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");
 
-    list_resources("/");
+    gresources = resources_get_resource();
+    g_resources_register(gresources);
+
+    list_resources( gresources, "/");
 
     gtk_widget_show_all(window);
     gtk_main();
