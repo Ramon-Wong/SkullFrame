@@ -6,5 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function callCHelloWorld() {
-    window.location.href        = "resources:///call/c_hello_world";
+    // window.location.href        = "resources:///call/c_hello_world";
+    window.webkit.messageHandlers.C_HelloWorld.postMessage(null);
 }

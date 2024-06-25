@@ -75,6 +75,8 @@ int main(int argc, char** argv) {
 
 	webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");
 
+ 	inject_js_functions(webview);
+
 	gresources = resources_get_resource();
 	g_resources_register(gresources);
 

@@ -16,5 +16,6 @@ const gchar			  * Check_resources( GResource *, const gchar *, const gchar *);
 
 
 void                    C_HelloWorld();
+void                    inject_js_functions(WebKitWebView* webview);
 
 #endif
