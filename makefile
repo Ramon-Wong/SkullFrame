@@ -14,21 +14,24 @@ RESOURCES_H		= $(inc_dir)/resources.h
 ALL_SOURCE		= $(wildcard $(src_dir)/*.c)
 ALL_OBJECTS		= $(patsubst $(src_dir)/%.c, $(obj_dir)/%.o, $(ALL_SOURCE))
 
-TARGET 			= $(obj_dir)/bin/.main
-PKG_LIBS		= `pkg-config --libs gtk+-3.0 webkit2gtk-4.0` -lpthread
-PKG_FLAGS		= `pkg-config --cflags gtk+-3.0 webkit2gtk-4.0`
+TARGET 			= $(obj_dir)/bin/main
+PKG_LIBS		= `pkg-config --libs gtk+-3.0 webkit2gtk-4.0`
+PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0`
+
 
 all:
-	@echo $(ALL_SOURCE); \
-	for src in $(ALL_SOURCE); do \
-		echo $$src; \
-	done
+	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
+		echo "compile shit"; \
+		$(CC) $(build) $(TARGET) $(ALL_SOURCE) -I include $(PKG_FLAGS); \
+	else \
+		echo "One or both of the resources.xml files does not exist."; \
+		echo "please check the resources.xml and build these with"; \
+		echo "make resources"; \
+	fi; \
 
 run:
 	@echo Running...
 	$(TARGET)
-	$(CC) $(PKG_FLAGS) $(compile) $$i $(PKG_LIBS) -I$(inc_dir) -o $$obj ; \
-	$(CC) $(build) $(TARGET) $(ALL_OBJECTS) $(PKG_LIBS)
 
 resources:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
