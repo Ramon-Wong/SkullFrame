@@ -1,9 +1,6 @@
 #include "functions.h"
 
 
-
-
-
 GResource * gresources;
 
 
@@ -14,6 +11,10 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
     g_print("Request URI: %s\n", uri);
     g_print("Request Path: %s\n", path);
     
+    if (g_str_has_prefix(path, "/call/c_hello_world")) {
+        C_HelloWorld();
+    }
+
     const gchar* data = NULL;
     gsize data_length = 0;
     const gchar* mime_type = "text/html";
@@ -47,6 +48,9 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
         g_object_unref(stream);
     }
 }
+
+
+
 
 
 int main(int argc, char** argv) {

@@ -14,4 +14,6 @@ void					list_resources( GResource *, const gchar*);
 const gchar			  * Check_resources( GResource *, const gchar *, const gchar *);
 
 
+void                    C_HelloWorld();
+
 #endif
