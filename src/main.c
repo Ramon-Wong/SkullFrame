@@ -9,7 +9,7 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
     const gchar* path = webkit_uri_scheme_request_get_path(request);
     
     g_print("Request URI: %s\n", uri);
-    g_print("Request Path: %s\n", path);
+    // g_print("Request Path: %s\n", path);             // comment this out, otherwise you'll get lots of this when you call the C function
     
     if (g_str_has_prefix(path, "/call/c_hello_world")) {
         C_HelloWorld();
