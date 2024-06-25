@@ -2,9 +2,6 @@
 
 
 
-// gcc -o test src/TestFinal.c resources.c -I include `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0`
-
-
 
 
 
@@ -97,7 +94,7 @@ int main(int argc, char** argv) {
 
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-    webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");               // use "resources:///myapp/web/Cow.html" to get /web/Cow.html
+    webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");
 
     list_resources("/");
 
