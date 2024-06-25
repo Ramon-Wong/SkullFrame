@@ -19,8 +19,8 @@ TARGET 			= $(obj_dir)/bin/.main
 PKG_LIBS		= `pkg-config --libs gtk+-3.0 webkit2gtk-4.0` -lpthread
 PKG_FLAGS		= `pkg-config --cflags gtk+-3.0 webkit2gtk-4.0`
 
-all:
-	@echo cooking stuff
+all: prepare
+	@echo cooking the stuff
 	@for i in $(SOURCE); do \
 		obj=`echo $$i | sed 's|$(src_dir)|$(obj_dir)|' | sed 's|.c|.o|'`; \
 		$(CC) $(PKG_FLAGS) $(compile) $$i $(PKG_LIBS) -I$(inc_dir) -o $$obj ; \
@@ -32,18 +32,28 @@ run:
 	@echo Running...
 	$(TARGET)
 
+resources:
+	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
+		echo "Both files exist (resources.c/resources.h)"; \
+	else \
+		echo "One or both files do not exist. but don't worry, I'll create these ASAP"; \
+		glib-compile-resources --generate-source $(RESOURCES_XML) --target=$(RESOURCES_C); \
+		glib-compile-resources --generate-header $(RESOURCES_XML) --target=$(RESOURCES_H); \
+		echo "..done"; \
+	fi; \
+
 source:
 	@for file in $(ALL_SOURCE); do \
 		echo Filename: $$file; \
 	done
 
-resource:
-	glib-compile-resources --generate-source --target=$(src_dir) $(RESOURCES_XML)
-	glib-compile-resources --generate-header --target=$(inc_dir) $(RESOURCES_XML)
-
 object:
 	@echo $(OBJECTS)
 	@echo $(OBJECTS)
+
+prepare:
+	mkdir -p $(obj_dir)
+	mkdir -p $(obj_dir)/bin
 
 clean:
 	rm -f $(RESOURCES_C) $(RESOURCES_H)
