@@ -2,6 +2,7 @@
 #define _FUNCTIONS_H
 
 #include <webkit2/webkit2.h>
+#include <JavaScriptCore/JavaScript.h>
 #include <gtk/gtk.h>
 #include <string.h>
 
