@@ -11,6 +11,6 @@
 
 const gchar			  * get_file_extension(const gchar *);
 void					list_resources( GResource *, const gchar*); 
-const gchar			  * Check_resources(const gchar *, const gchar *);
+const gchar			  * Check_resources( GResource *, const gchar *, const gchar *);
 
 #endif
