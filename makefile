@@ -15,14 +15,15 @@ ALL_SOURCE		= $(wildcard $(src_dir)/*.c)
 ALL_OBJECTS		= $(patsubst $(src_dir)/%.c, $(obj_dir)/%.o, $(ALL_SOURCE))
 
 TARGET 			= $(obj_dir)/bin/main
-PKG_LIBS		= `pkg-config --libs gtk+-3.0 webkit2gtk-4.0`
 PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0`
 
 
 all:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
 		echo "compile shit"; \
+		echo "list of sources: $(ALL_SOURCE)"; \
 		$(CC) $(build) $(TARGET) $(ALL_SOURCE) -I include $(PKG_FLAGS); \
+		echo "..Done!!, run 'make run' to test"; \
 	else \
 		echo "One or both of the resources.xml files does not exist."; \
 		echo "please check the resources.xml and build these with"; \
@@ -40,7 +41,7 @@ resources:
 		echo "One or both files do not exist. but don't worry, I'll create these ASAP"; \
 		glib-compile-resources --generate-source $(RESOURCES_XML) --target=$(RESOURCES_C); \
 		glib-compile-resources --generate-header $(RESOURCES_XML) --target=$(RESOURCES_H); \
-		echo "..done"; \
+		echo "..Done!!"; \
 	fi; \
 
 source:
@@ -58,6 +59,5 @@ prepare:
 
 clean:
 	rm -f $(RESOURCES_C) $(RESOURCES_H)
-	rm -f $(ALL_OBJECTS)
 	rm -f $(TARGET)
 

@@ -1,5 +1,4 @@
 #include "functions.h"
-#include "resources.h"
 
 
 
@@ -8,81 +7,7 @@
 
 
 
-// Function to extract the file extension from a path
-const gchar* get_file_extension(const gchar* path) {
-    const gchar* dot = strrchr(path, '.');
-    if (!dot || dot == path) return "";
-    return dot + 1;
-}
 
-
-void list_resources(const gchar *path) {
-    GResource *resources = resources_get_resource();
-    GError *error = NULL;
-
-    // Enumerate children of the specified path
-    gchar **children = g_resource_enumerate_children(resources, path, G_RESOURCE_LOOKUP_FLAGS_NONE, &error);
-    if (error) {
-        g_printerr("Error enumerating resources: %s\n", error->message);
-        g_error_free(error);
-        return;
-    }
-
-    // Print each child
-    for (gchar **child = children; *child != NULL; child++) {
-        gchar *child_path = g_build_filename(path, *child, NULL);
-        g_print("Resource: %s\n", child_path);
-
-        // Recursively list resources if it's a directory
-        if (g_str_has_suffix(child_path, "/")) {
-            list_resources(child_path);
-        }
-        // else{ 
-        //     g_print(">>>this  is a file: %s \n", child_path);
-        // }
-        g_free(child_path);
-    }
-
-    g_strfreev(children);
-}
-
-
-gchar* Check_resources(const gchar *path, const gchar *keyword) {
-    GResource *resources = resources_get_resource();
-    GError *error = NULL;
-
-    // Enumerate children of the specified path
-    gchar **children = g_resource_enumerate_children(resources, path, G_RESOURCE_LOOKUP_FLAGS_NONE, &error);
-    if (error) {
-        g_printerr("Error enumerating resources: %s\n", error->message);
-        g_error_free(error);
-        return g_strdup("Error enumerating resources");
-    }
-
-    for (gchar **child = children; *child != NULL; child++) {
-        gchar *child_path = g_build_filename(path, *child, NULL);
-        // g_print("Resource: %s\n", child_path);
-
-        if (g_strcmp0(child_path, keyword) == 0) {
-            // g_print(" \n %s >> found \n", child_path);
-            g_strfreev(children);
-            return child_path;
-        }
-
-        // Recursively list resources if it's a directory
-        if (g_str_has_suffix(child_path, "/")) {
-            gchar *found_path = Check_resources(child_path, keyword);
-            if (found_path && g_strcmp0(found_path, "Not found") != 0) {
-                g_strfreev(children);
-                return found_path;
-            }
-        }
-        g_free(child_path);
-    }
-
-    g_strfreev(children);
-    return g_strdup("Not found");
-}
 
 
 
@@ -160,8 +85,10 @@ int main(int argc, char** argv) {
     const gchar* scheme = "resources";
     webkit_web_context_register_uri_scheme(context, scheme, my_uri_scheme_request_callback, NULL, NULL);
 
-    WebKitWebView* webview = WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
-    GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    WebKitWebView* webview      = WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
+    GtkWidget* window           = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "My WebKitGTK Window");
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
     gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(webview));
 
     // Get WebKit settings and optimize them
@@ -171,7 +98,7 @@ int main(int argc, char** argv) {
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");               // use "resources:///myapp/web/Cow.html" to get /web/Cow.html
-                              // href="resources:///myapp/web/style/style.css"
+
     list_resources("/");
 
     gtk_widget_show_all(window);
