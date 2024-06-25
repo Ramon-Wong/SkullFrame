@@ -19,7 +19,7 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
     const gchar* mime_type = "text/html";
 
     if( g_strcmp0( Check_resources( gresources, "/", path), path) == 0){
-        g_print("found: %s \n\n", path); 
+        g_print("found: %s in resources\n", path); 
 
         GBytes *bytes = g_resource_lookup_data( gresources,  path, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);       
 
