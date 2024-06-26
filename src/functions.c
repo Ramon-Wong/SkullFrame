@@ -21,3 +21,14 @@ void inject_js_functions(WebKitWebView* webview) {
 
     g_signal_connect(manager, "script-message-received::C_HelloWorld", G_CALLBACK(C_HelloWorld), NULL);
 }
+
+
+
+void inject_Hook_functions(WebKitWebView * webview){
+
+    g_print("injecting Hook Functions");
+    inject_js_functions(webview);
+
+
+
+}
