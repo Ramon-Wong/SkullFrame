@@ -3,19 +3,13 @@
 
 
 
-
-
-
-
-
-
-
-
+// window.webkit.messageHandlers.js_Call.postMessage("test");
 void C_HelloWorld1(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
     g_print("Hello world, got your call from JavaScript\n");
 }
 
 
+// window.webkit.messageHandlers.js_Call.postMessage("test");
 void  C_HelloWorld2(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
     JSCValue *value = webkit_javascript_result_get_js_value(result);
 
@@ -30,6 +24,7 @@ void  C_HelloWorld2(WebKitUserContentManager* manager, WebKitJavascriptResult* r
 }
 
 
+// window.webkit.messageHandlers.js_Call.postMessage(["Hello from JavaScript", 42, true]);
 void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
     JSCValue *value = webkit_javascript_result_get_js_value(result);
 
@@ -60,7 +55,6 @@ void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* re
 }
 
 
-
 void initialize_webkit(WebKitWebView* webView) {
     WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(webView);
 
@@ -73,10 +67,9 @@ void initialize_webkit(WebKitWebView* webView) {
     webkit_user_content_manager_add_script(contentManager, userScript);
 
     // Add a script message handler
-    g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(C_HelloWorld1), NULL);
+    g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(C_HelloWorld2), NULL);
     webkit_user_content_manager_register_script_message_handler(contentManager, "js_Call");
 }
-
 
 
 void inject_Hook_functions(WebKitWebView * webview){

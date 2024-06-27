@@ -11,10 +11,6 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 	// g_print("Request URI: %s\n", uri);				// comment this out, otherwise you'll get lots of this when you call the C function
 	// g_print("Request Path: %s\n", path);				// comment this out, otherwise you'll get lots of this when you call the C function
 	
-	if (g_str_has_prefix(path, "/call/c_hello_world")) {
-		C_HelloWorld();
-	}
-
 	const gchar* data = NULL;
 	gsize data_length = 0;
 	const gchar* mime_type = "text/html";
