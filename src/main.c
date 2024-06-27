@@ -73,9 +73,8 @@ int main(int argc, char** argv) {
 
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-	webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");
-
 	inject_Hook_functions(webview);
+	webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");
 
 	gresources = resources_get_resource();
 	g_resources_register(gresources);
