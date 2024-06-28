@@ -2,7 +2,7 @@
 
 
 GResource * gresources;
-
+WebKitWebView * webview;
 
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
 	// const gchar* uri = webkit_uri_scheme_request_get_uri(request);
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 	const gchar* scheme = "resources";
 	webkit_web_context_register_uri_scheme(context, scheme, my_uri_scheme_request_callback, NULL, NULL);
 
-	WebKitWebView* webview		= WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
+	webview		= WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
 	GtkWidget* window			= gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), "My WebKitGTK Window");
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);

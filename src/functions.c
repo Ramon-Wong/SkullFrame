@@ -3,15 +3,63 @@
 
 
 
+
+
+
+
+// void webkit_web_view_evaluate_javascript( WebKitWebView* web_view, const char* script, gssize length, const char* world_name, const char* source_uri, 
+//                                          GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data)
+
+
+
+
+
+WebKitJavascriptResult * g_result;
+
+
+static void web_view_javascript_finished(GObject * object, GAsyncResult * result, gpointer user_data){
+
+    JSCValue               *value;
+    GError                 *error = NULL;
+
+    value = webkit_web_view_evaluate_javascript_finish( webview, result, &error);
+    if (!value) {
+        g_warning ("Error running javascript: %s", error->message);
+        g_error_free (error);
+        return;
+    }
+
+    if(jsc_value_is_string(value)){
+        gchar        *str_value = jsc_value_to_string (value);
+        JSCException *exception = jsc_context_get_exception (jsc_value_get_context (value));
+        if (exception)
+            g_warning ("Error running javascript(Exception): %s", jsc_exception_get_message (exception));
+        else
+            g_print ("Script result: %s\n", str_value);
+        g_free (str_value);
+    } else {
+        // g_warning ("Error running javascript(jsc_value_is_string): unexpected return value %s", jsc_value_to_string (value));
+    }
+    webkit_javascript_result_unref (g_result);
+}
+
+
 // window.webkit.messageHandlers.js_Call.postMessage("test");
 void C_HelloWorld1(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
     g_print("Hello world, got your call from JavaScript\n");
+
+    g_result = result;
+    // WebKitWebView * web_view = WEBKIT_WEB_VIEW(user_data);
+
+    gchar *script = g_strdup_printf("console.log('C RULES OVER EARTH'); ");
+    webkit_web_view_evaluate_javascript( webview, script, -1, NULL, NULL, NULL, web_view_javascript_finished, NULL);
+    g_free (script);
 }
 
 
 // window.webkit.messageHandlers.js_Call.postMessage("test");
 void  C_HelloWorld2(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
-    JSCValue *value = webkit_javascript_result_get_js_value(result);
+    JSCValue * value = webkit_javascript_result_get_js_value(result);
 
     // Check if the value is a string
     if (jsc_value_is_string(value)) {
@@ -26,7 +74,7 @@ void  C_HelloWorld2(WebKitUserContentManager* manager, WebKitJavascriptResult* r
 
 // window.webkit.messageHandlers.js_Call.postMessage(["Hello from JavaScript", 42, true]);
 void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
-    JSCValue *value = webkit_javascript_result_get_js_value(result);
+    JSCValue * value = webkit_javascript_result_get_js_value(result);
 
     // Check if the value is an array
     if (jsc_value_is_array(value)) {
@@ -52,6 +100,8 @@ void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* re
     } else {
         g_print("Message is not an array.\n");
     }
+
+    webkit_javascript_result_unref(result);
 }
 
 
@@ -67,7 +117,7 @@ void initialize_C_Function(WebKitWebView* webView) {
     webkit_user_content_manager_add_script(contentManager, userScript);
 
     // Add a script message handler
-    g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(C_HelloWorld3), NULL);
+    g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(C_HelloWorld1), NULL);
     webkit_user_content_manager_register_script_message_handler(contentManager, "js_Call");
 }
 
@@ -77,5 +127,18 @@ void inject_Hook_functions(WebKitWebView * webview){
     g_print("injecting Hook Functions");
     initialize_C_Function(webview);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
