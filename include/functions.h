@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+#include <libxml/tree.h>
 #include "resources.h"
 
 

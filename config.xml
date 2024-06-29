@@ -1,0 +1,5 @@
+<configuration>
+	<gtkwindow name="Webkitgtk2 windows" width="800" height="600">
+		<uri path="resources:///myapp/web/main.html"></uri>
+	</gtkwindow>
+</configuration>
