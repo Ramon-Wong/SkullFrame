@@ -4,18 +4,7 @@
 
 
 
-
-
-
-// void webkit_web_view_evaluate_javascript( WebKitWebView* web_view, const char* script, gssize length, const char* world_name, const char* source_uri, 
-//                                          GCancellable* cancellable, GAsyncReadyCallback callback, gpointer user_data)
-
-
-
-
-
 WebKitJavascriptResult * g_result;
-
 
 static void web_view_javascript_finished(GObject * object, GAsyncResult * result, gpointer user_data){
 
@@ -44,16 +33,16 @@ static void web_view_javascript_finished(GObject * object, GAsyncResult * result
 }
 
 
+
 // window.webkit.messageHandlers.js_Call.postMessage("test");
 void C_HelloWorld1(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data) {
     g_print("Hello world, got your call from JavaScript\n");
 
     g_result = result;
-    // WebKitWebView * web_view = WEBKIT_WEB_VIEW(user_data);
 
-    gchar *script = g_strdup_printf("console.log('C RULES OVER EARTH'); ");
-    webkit_web_view_evaluate_javascript( webview, script, -1, NULL, NULL, NULL, web_view_javascript_finished, NULL);
-    g_free (script);
+    gchar *script = g_strdup_printf("window.onCFunctionReturn('Happy Motherfucking Every Day');");
+    webkit_web_view_evaluate_javascript( webview, script, -1, NULL, NULL, NULL, web_view_javascript_finished, NULL);        
+    g_free(script);    
 }
 
 
@@ -107,19 +96,12 @@ void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* re
 
 void initialize_C_Function(WebKitWebView* webView) {
     WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(webView);
-
-    // Create a user script
-    const gchar* script =
-        "window.js_Call = function(message) {"
-        "    return window.webkit.messageHandlers.js_Call.postMessage(message);"
-        "};";
-    WebKitUserScript* userScript = webkit_user_script_new(script, WEBKIT_USER_CONTENT_INJECT_TOP_FRAME, WEBKIT_USER_SCRIPT_INJECT_AT_DOCUMENT_START, NULL, NULL);
-    webkit_user_content_manager_add_script(contentManager, userScript);
-
     // Add a script message handler
+
     g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(C_HelloWorld1), NULL);
     webkit_user_content_manager_register_script_message_handler(contentManager, "js_Call");
 }
+
 
 
 void inject_Hook_functions(WebKitWebView * webview){
@@ -127,18 +109,4 @@ void inject_Hook_functions(WebKitWebView * webview){
     g_print("injecting Hook Functions");
     initialize_C_Function(webview);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
