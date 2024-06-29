@@ -47,9 +47,6 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 }
 
 
-
-
-
 int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 

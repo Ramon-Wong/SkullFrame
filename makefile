@@ -15,7 +15,7 @@ ALL_SOURCE		= $(wildcard $(src_dir)/*.c)
 ALL_OBJECTS		= $(patsubst $(src_dir)/%.c, $(obj_dir)/%.o, $(ALL_SOURCE))
 
 TARGET 			= $(obj_dir)/bin/main
-PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0`
+PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
 
 
 all:
