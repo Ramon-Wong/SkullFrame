@@ -1,5 +1,5 @@
 CC				= gcc
-compile 		= -Wall -c
+compile 		= -Wall -c 
 build			= -Wall -o
 
 src_dir			= src
