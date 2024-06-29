@@ -12,16 +12,17 @@ function onCFunctionReturn(result){
 	}
 }
 
+window.onCFunctionReturn = onCFunctionReturn;
+
+
 function ThisIsAFunction(message, callback) {
 	window.onCFunctionCallback = callback;
 	window.webkit.messageHandlers.js_Call.postMessage(message);
 }
 
-window.onCFunctionReturn = onCFunctionReturn;
-
 
 function testFunction() {
-	ThisIsAFunction(["What is one plus one"], function(result) {
+	ThisIsAFunction(["What is one plus one"], function(result){
 		console.log("Received from C: " + result);
 	});
 }
