@@ -3,6 +3,8 @@
 
 GResource * gresources;
 WebKitWebView * webview;
+CONFIG Global_Config;
+
 
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
 	// const gchar* uri = webkit_uri_scheme_request_get_uri(request);
@@ -46,6 +48,13 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 
 int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
+	
+	if (argc >= 2) {
+		printf("\n\nArgument: %s\n", argv[1]);
+		ReadXMLConfig(argv[1], &Global_Config);
+	} else {
+		printf("\n\nNo arguments provided.\n");
+	}
 
 	WebKitWebContext* context = webkit_web_context_new();
 	const gchar* scheme = "resources";
@@ -53,8 +62,8 @@ int main(int argc, char** argv) {
 
 	webview		= WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
 	GtkWidget* window			= gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window), "My WebKitGTK Window");
-	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+	gtk_window_set_title(GTK_WINDOW(window), Global_Config.name);
+	gtk_window_set_default_size(GTK_WINDOW(window), Global_Config.width, Global_Config.height);
 	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(webview));
 
 	// Get WebKit settings and optimize them
@@ -64,7 +73,7 @@ int main(int argc, char** argv) {
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
 	inject_Hook_functions(webview);
-	webkit_web_view_load_uri(webview, "resources:///myapp/web/main.html");
+	webkit_web_view_load_uri(webview, Global_Config.uriPath);
 
 	gresources = resources_get_resource();
 	g_resources_register(gresources);
