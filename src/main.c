@@ -66,9 +66,11 @@ int main(int argc, char** argv) {
 	gtk_window_set_default_size(GTK_WINDOW(window), Global_Config.width, Global_Config.height);
 	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(webview));
 
-	// Get WebKit settings and optimize them
-	WebKitSettings *settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
-	webkit_settings_set_enable_developer_extras(settings, TRUE);
+	// Check if Developer mode is enable
+	if(Global_Config.developerEnabled == 1){
+		WebKitSettings *settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
+		webkit_settings_set_enable_developer_extras(settings, TRUE);
+	}	
 
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 

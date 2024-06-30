@@ -31,11 +31,15 @@ int ReadXMLConfig(const char * filename, CONFIG * Config){
             xmlFree(height);
 
             // Find the uri element within gtkwindow
-            for (xmlNode *child = node->children; child; child = child->next) {
-                if (child->type == XML_ELEMENT_NODE && xmlStrcmp(child->name, (const xmlChar *)"uri") == 0) {
+            for(xmlNode *child = node->children; child; child = child->next) {
+                if(child->type == XML_ELEMENT_NODE && xmlStrcmp(child->name, (const xmlChar *)"uri") == 0) {
                     char *path = (char *)xmlGetProp(child, (const xmlChar *)"path");
                     strcpy( Config->uriPath, path);                    
                     xmlFree(path);
+                }else if(child->type == XML_ELEMENT_NODE && xmlStrcmp(child->name, (const xmlChar *)"developer") == 0) {
+                    char *enable = (char *)xmlGetProp(child, (const xmlChar *)"enable");
+                    Config->developerEnabled = (strcmp(enable, "true") == 0 || strcmp(enable, "1") == 0);
+                    xmlFree(enable);
                 }
             }
 
@@ -44,6 +48,7 @@ int ReadXMLConfig(const char * filename, CONFIG * Config){
             printf("  Width: %i\n", Config->width);
             printf("  Height: %i\n", Config->height);
             printf("  URI Path: %s\n", Config->uriPath);
+            printf("  Developer Enabled: %s\n", Config->developerEnabled ? "true" : "false");
 		}
 	}
 
