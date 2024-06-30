@@ -7,10 +7,7 @@ WebKitWebView * webview;
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
 	// const gchar* uri = webkit_uri_scheme_request_get_uri(request);
 	const gchar* path = webkit_uri_scheme_request_get_path(request);
-	
-	// g_print("Request URI: %s\n", uri);				// comment this out, otherwise you'll get lots of this when you call the C function
-	// g_print("Request Path: %s\n", path);				// comment this out, otherwise you'll get lots of this when you call the C function
-	
+		
 	const gchar* data = NULL;
 	gsize data_length = 0;
 	const gchar* mime_type = "text/html";
