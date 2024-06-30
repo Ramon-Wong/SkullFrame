@@ -50,6 +50,9 @@ source:
 		echo Filename: $$file; \
 	done
 
+valgrind:
+	valgrind $(TARGET) $(CONFIG_XML)
+
 object:
 	@echo $(OBJECTS)
 	@echo $(OBJECTS)
