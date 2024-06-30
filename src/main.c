@@ -3,6 +3,8 @@
 
 GResource * gresources;
 WebKitWebView * webview;
+CONFIG Global_Config;
+
 
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
 	// const gchar* uri = webkit_uri_scheme_request_get_uri(request);
@@ -49,6 +51,14 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 
 int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
+	
+	if (argc >= 2) {
+		printf("\n\nArgument: %s\n", argv[1]);
+		ReadXMLConfig(argv[1], &Global_Config);
+	} else {
+		printf("\n\nNo arguments provided.\n");
+	}
+
 
 	WebKitWebContext* context = webkit_web_context_new();
 	const gchar* scheme = "resources";

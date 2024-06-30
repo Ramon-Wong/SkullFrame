@@ -17,6 +17,7 @@ ALL_OBJECTS		= $(patsubst $(src_dir)/%.c, $(obj_dir)/%.o, $(ALL_SOURCE))
 TARGET 			= $(obj_dir)/bin/main
 PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
 
+CONFIG_XML		= config.xml
 
 all:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
@@ -32,7 +33,7 @@ all:
 
 run:
 	@echo Running...
-	$(TARGET)
+	$(TARGET) $(CONFIG_XML)
 
 resources:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \

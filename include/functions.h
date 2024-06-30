@@ -10,11 +10,22 @@
 #include "resources.h"
 
 
+typedef struct{				
+	char		name[128];
+	int			width;
+	int			height;
+	char		uriPath[128];
+} CONFIG;
+
+
 extern WebKitWebView	* webview;
 const gchar				* get_file_extension(const gchar *);
 void					  list_resources( GResource *, const gchar*); 
 const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 
 void					  inject_Hook_functions(WebKitWebView *);
+
+int						  ReadXMLConfig(const char *, CONFIG *);
+
 
 #endif
