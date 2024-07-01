@@ -3,6 +3,5 @@
 		<file>web/main.html</file>
 		<file>web/style/style.css</file>
 		<file>web/script/index.js</file>
-		<file>web/script/functions.js</file>
 	</gresource>
 </gresources>

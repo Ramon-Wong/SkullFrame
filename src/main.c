@@ -9,10 +9,21 @@ CONFIG Global_Config;
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
 	// const gchar* uri = webkit_uri_scheme_request_get_uri(request);
 	const gchar* path = webkit_uri_scheme_request_get_path(request);
-		
+	
 	const gchar* data = NULL;
 	gsize data_length = 0;
 	const gchar* mime_type = "text/html";
+
+	if( g_strcmp0( "/myapp/web/script/functions.js", path) == 0){
+		g_print("lol, aren't you tired using functions.js for everything \n"); 
+
+		const char *functions_js_content = insert_JSScript();
+		const gsize functions_js_length = strlen(insert_JSScript());
+
+		GInputStream* stream = g_memory_input_stream_new_from_data( functions_js_content, functions_js_length, NULL);
+		webkit_uri_scheme_request_finish( request, stream, functions_js_length, "application/javascript");
+		g_object_unref(stream);		
+	}
 
 	if( g_strcmp0( Check_resources( gresources, "/", path), path) == 0){
 		g_print("found: %s in resources", path); 
@@ -46,6 +57,61 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 }
 
 
+void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data){ 
+	g_print("on load changed\n");
+}
+
+
+void on_load_failed(WebKitWebView *web_view, WebKitLoadEvent load_event, gchar *failing_uri, GError *error, gpointer user_data){
+	g_print("on load failed\n");    
+}
+
+
+void on_load_failed_with_tls_errors(WebKitWebView *web_view, gchar *failing_uri, GTlsCertificate *certificate, GTlsCertificateFlags errors, gpointer user_data){
+	g_print("on load failed with tls errors\n");
+}
+
+
+gboolean on_script_dialog(WebKitWebView *web_view, WebKitScriptDialog *dialog, gpointer user_data){ 
+	g_print("on script dialog\n");
+	return FALSE;
+}
+
+
+gboolean on_decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *decision, WebKitPolicyDecisionType type, gpointer user_data){ 
+	g_print("on decide Policy\n");
+	return FALSE;
+}
+
+
+void on_ready_to_show(WebKitWebView *web_view, gpointer user_data){ 
+	g_print("on ready to show\n");
+}
+
+
+void on_close(WebKitWebView *web_view, gpointer user_data){ 
+	g_print("on close\n");
+}
+
+
+gboolean on_context_menu(WebKitWebView *web_view, WebKitContextMenu *context_menu, GdkEvent *event, WebKitHitTestResult *hit_test_result, gpointer user_data){
+	g_print("On Context Menu\n");
+	return FALSE;
+}
+
+void on_button_clicked(GtkButton *button, gpointer data){
+    GtkWidget *widget;
+    widget = (GtkWidget *) data;
+
+	g_print("On Button Clicked\n");
+
+    if (widget == NULL)
+        return;
+    gtk_widget_show(widget);
+    return;
+}
+
+
 int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 	
@@ -60,7 +126,7 @@ int main(int argc, char** argv) {
 	const gchar* scheme = "resources";
 	webkit_web_context_register_uri_scheme(context, scheme, my_uri_scheme_request_callback, NULL, NULL);
 
-	webview		= WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
+	webview						= WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
 	GtkWidget* window			= gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), Global_Config.name);
 	gtk_window_set_default_size(GTK_WINDOW(window), Global_Config.width, Global_Config.height);
@@ -73,6 +139,16 @@ int main(int argc, char** argv) {
 	}	
 
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+	g_signal_connect( webview, "load-changed",					G_CALLBACK(on_load_changed), NULL);
+	g_signal_connect( webview, "load-failed",					G_CALLBACK(on_load_failed), NULL);
+	g_signal_connect( webview, "load-failed-with-tls-errors",	G_CALLBACK(on_load_failed_with_tls_errors), NULL);
+	g_signal_connect( webview, "script-dialog",					G_CALLBACK(on_script_dialog), NULL);
+	g_signal_connect( webview, "decide-policy",					G_CALLBACK(on_decide_policy), NULL);
+	g_signal_connect( webview, "ready-to-show",					G_CALLBACK(on_ready_to_show), NULL);
+	g_signal_connect( webview, "close",							G_CALLBACK(on_close), NULL);
+	g_signal_connect( webview, "context-menu",					G_CALLBACK(on_context_menu), NULL);
+    g_signal_connect( webview, "clicked",						G_CALLBACK(on_button_clicked), NULL);
 
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);

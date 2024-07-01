@@ -78,3 +78,10 @@ const gchar* Check_resources(  GResource * resources, const gchar *path, const g
     g_strfreev(children);
     return g_strdup("Not found");
 }
+
+
+const char * insert_JSScript(){
+
+    const char * string = "function onDeviceReady() { console.log('Device is ready'); }";
+    return string;
+}

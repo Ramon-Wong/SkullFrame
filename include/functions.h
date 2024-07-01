@@ -27,6 +27,5 @@ const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 void					  inject_Hook_functions(WebKitWebView *);
 
 int						  ReadXMLConfig(const char *, CONFIG *);
-
-
+const char				* insert_JSScript();
 #endif
