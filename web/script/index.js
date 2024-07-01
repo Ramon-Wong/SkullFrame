@@ -26,3 +26,7 @@ function testFunction() {
 		console.log("Received from C: " + result);
 	});
 }
+
+
+
+onDeviceReady();
