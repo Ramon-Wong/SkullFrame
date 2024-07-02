@@ -1,107 +1,65 @@
+const gchar* Check_resources(GResource * resources, const gchar *path, const gchar *keyword) {
+    // GError *error = NULL;
+    // gchar **children = g_resource_enumerate_children(resources, path, G_RESOURCE_LOOKUP_FLAGS_NONE, &error);
+    // if (error) {
+    //     g_printerr("Error enumerating resources: %s\n", error->message);
+    //     g_error_free(error);
+    //     return "Error enumerating resources";
+    // }
 
-// uri_path "/resources:///myapp/web/script/functions.js"
+    for (gchar **child = children; *child != NULL; child++) {
+        gchar *child_path = g_build_filename(path, *child, NULL);
+        if (g_strcmp0(child_path, keyword) == 0) {
+            g_strfreev(children);
+            return child_path;
+        }
 
-void unique_Function_Name(WebKitURISchemeRequest* request, gpointer user_data, const char * uri_path, const gchar * data, gsize data_length) {
-	const gchar* path = webkit_uri_scheme_request_get_path(request);
-	
-	// Check if the request path matches the path for the static script
-	if (g_strcmp0(path, uri_path) == 0 && data) {
-		if (data) {
-			GInputStream* stream = g_memory_input_stream_new_from_data(data, data_length, NULL);
-			webkit_uri_scheme_request_finish(request, stream, data_length, "application/javascript");
-			g_object_unref(stream);
-		} else {
-			// Handle not found or error response
-			webkit_uri_scheme_request_finish_error(request, g_error_new_literal(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "Resource not found"));
-		}
-	} else {
-		g_print("Failed to load resource.\n");		  
-	}	
-}
-
-
-
-void unique_Function_Name(WebKitURISchemeRequest* request, gpointer user_data) {
-    const gchar* path = webkit_uri_scheme_request_get_path(request);
-
-    const gchar* data = NULL;
-    gsize data_length = 0;
-    const gchar* mime_type = "application/javascript";
-
-    // Check if the request path matches the path for the static script
-    if (g_strcmp0(path, "/resources:///myapp/web/script/functions.js") == 0) {
-        data = functions_js_content;
-        data_length = functions_js_length;
-    } else {
-        // Existing logic for serving resources from gresources, but only for JavaScript
-        if (g_strcmp0(Check_resources(gresources, "/", path), path) == 0) {
-            g_print("found: %s in resources", path); 
-
-            GBytes *bytes = g_resource_lookup_data(gresources, path, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);       
-
-            if (bytes) {
-                data = (const gchar*) g_bytes_get_data(bytes, &data_length);
-                g_bytes_unref(bytes);
-            } else {
-                g_print("Failed to load resource.\n");
+        if (g_str_has_suffix(child_path, "/")) {
+            const gchar *found_path = Check_resources(resources, child_path, keyword);
+            if (found_path && g_strcmp0(found_path, "Not found") != 0) {
+                g_strfreev(children);
+                return found_path;
             }
         }
+        g_free(child_path);
     }
 
-    if (data) {
-        GInputStream* stream = g_memory_input_stream_new_from_data(data, data_length, NULL);
-        webkit_uri_scheme_request_finish(request, stream, data_length, mime_type);
-        g_object_unref(stream);
-    } else {
-        // Handle not found or error response
-        webkit_uri_scheme_request_finish_error(request, g_error_new_literal(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "Resource not found"));
-    }
+    g_strfreev(children);
+    return "Not found";
 }
 
 
+const gchar* Check_resources(  GResource * resources, const gchar *path, const gchar *keyword) {
+    // GError *error = NULL;
+    // // Enumerate children of the specified path
+    // gchar **children = g_resource_enumerate_children(resources, path, G_RESOURCE_LOOKUP_FLAGS_NONE, &error);
+    // if (error) {
+    //     g_printerr("Error enumerating resources: %s\n", error->message);
+    //     g_error_free(error);
+    //     return g_strdup("Error enumerating resources");
+    // }
 
-void unique_Function_Name(WebKitURISchemeRequest* request, gpointer user_data) {
-    const gchar* request_path = webkit_uri_scheme_request_get_path(request);
-    const gchar* data = NULL;
-    gsize data_length = 0;
-    const gchar* mime_type = NULL;
+    for (gchar **child = children; *child != NULL; child++) {
+        gchar *child_path = g_build_filename(path, *child, NULL);
+        // g_print("Resource: %s\n", child_path);
 
-    // Check if the request path matches the path for the static script
-    if (g_strcmp0(request_path, "/path/to/static/script.js") == 0) {
-        data = functions_js_content;
-        data_length = functions_js_length;
-        mime_type = "application/javascript";
-    } else {
-        g_print("Failed to load resource: %s\n", request_path);
+        if (g_strcmp0(child_path, keyword) == 0) {
+            // g_print(" \n %s >> found \n", child_path);
+            g_strfreev(children);
+            return child_path;
+        }
+
+        // Recursively list resources if it's a directory
+        if (g_str_has_suffix(child_path, "/")) {
+            const gchar *found_path = Check_resources( resources, child_path, keyword);
+            if (found_path && g_strcmp0(found_path, "Not found") != 0) {
+                g_strfreev(children);
+                return found_path;
+            }
+        }
+        g_free(child_path);
     }
 
-    if (data) {
-        GInputStream* stream = g_memory_input_stream_new_from_data(data, data_length, NULL);
-        webkit_uri_scheme_request_finish(request, stream, data_length, mime_type);
-        g_object_unref(stream);
-    } else {
-        // Handle not found or error response
-        GError* error = g_error_new_literal(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "Resource not found");
-        webkit_uri_scheme_request_finish_error(request, error);
-        g_error_free(error);
-    }
+    g_strfreev(children);
+    return g_strdup("Not found");
 }
-
-
-
-// void insert_JSScript(WebKitURISchemeRequest* request, gpointer user_data, const char * uri_path, const gchar * data, gsize data_length) {
-//     const gchar* path = webkit_uri_scheme_request_get_path(request);
-
-//     // Check if the request path matches the path for the static script
-//     if (g_strcmp0(path, uri_path) == 0 && data) {
-//         GInputStream* stream = g_memory_input_stream_new_from_data(data, data_length, NULL);
-//         webkit_uri_scheme_request_finish(request, stream, data_length, "application/javascript");
-//         g_object_unref(stream);
-//     } else {
-//         // Handle not found or error response
-//         GError* error = g_error_new_literal(G_IO_ERROR, G_IO_ERROR_NOT_FOUND, "Resource not found");
-//         webkit_uri_scheme_request_finish_error(request, error);
-//         g_error_free(error);
-//         g_print("Failed to load resource: %s\n", path);
-//     }
-// }

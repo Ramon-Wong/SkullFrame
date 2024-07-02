@@ -1,5 +1,5 @@
 <configuration>
-	<gtkwindow name="Webkitgtk-Deux windows" width="1000" height="600">
+	<gtkwindow name="Webkitgtk-Deux windows" width="1000" height="600" nofix="false">
 		<uri path="resources:///myapp/web/main.html"></uri>
 		<developer enable="true"></developer>
 	</gtkwindow>

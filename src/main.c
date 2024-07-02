@@ -1,9 +1,9 @@
 #include "functions.h"
 
 
-GResource * gresources;
-WebKitWebView * webview;
-CONFIG Global_Config;
+GResource 			* 	gresources;
+WebKitWebView		* 	webview;
+CONFIG 					Global_Config;
 
 
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
@@ -15,7 +15,7 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 	const gchar* mime_type = "text/html";
 
 	if( g_strcmp0( "/myapp/web/script/functions.js", path) == 0){
-		g_print("lol, aren't you tired using functions.js for everything \n"); 
+		g_print("\tUsing system js script \n"); 
 
 		const char *functions_js_content = insert_JSScript();
 		const gsize functions_js_length = strlen(insert_JSScript());
@@ -57,58 +57,11 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 }
 
 
-void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data){ 
-	g_print("on load changed\n");
-}
-
-
-void on_load_failed(WebKitWebView *web_view, WebKitLoadEvent load_event, gchar *failing_uri, GError *error, gpointer user_data){
-	g_print("on load failed\n");    
-}
-
-
-void on_load_failed_with_tls_errors(WebKitWebView *web_view, gchar *failing_uri, GTlsCertificate *certificate, GTlsCertificateFlags errors, gpointer user_data){
-	g_print("on load failed with tls errors\n");
-}
-
-
-gboolean on_script_dialog(WebKitWebView *web_view, WebKitScriptDialog *dialog, gpointer user_data){ 
-	g_print("on script dialog\n");
-	return FALSE;
-}
-
-
-gboolean on_decide_policy(WebKitWebView *web_view, WebKitPolicyDecision *decision, WebKitPolicyDecisionType type, gpointer user_data){ 
-	g_print("on decide Policy\n");
-	return FALSE;
-}
-
-
-void on_ready_to_show(WebKitWebView *web_view, gpointer user_data){ 
-	g_print("on ready to show\n");
-}
-
-
-void on_close(WebKitWebView *web_view, gpointer user_data){ 
-	g_print("on close\n");
-}
-
-
-gboolean on_context_menu(WebKitWebView *web_view, WebKitContextMenu *context_menu, GdkEvent *event, WebKitHitTestResult *hit_test_result, gpointer user_data){
-	g_print("On Context Menu\n");
-	return FALSE;
-}
-
-void on_button_clicked(GtkButton *button, gpointer data){
-    GtkWidget *widget;
-    widget = (GtkWidget *) data;
-
-	g_print("On Button Clicked\n");
-
-    if (widget == NULL)
-        return;
-    gtk_widget_show(widget);
-    return;
+void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
+    if (load_event == WEBKIT_LOAD_FINISHED) {
+        // All resources, including JavaScript, have been loaded and executed
+        g_print("Page fully loaded and JavaScript executed\n");
+    }
 }
 
 
@@ -131,27 +84,22 @@ int main(int argc, char** argv) {
 	gtk_window_set_title(GTK_WINDOW(window), Global_Config.name);
 	gtk_window_set_default_size(GTK_WINDOW(window), Global_Config.width, Global_Config.height);
 	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(webview));
-
+	gtk_window_set_resizable(GTK_WINDOW(window), Global_Config.fix_size);
+	
 	// Check if Developer mode is enable
 	if(Global_Config.developerEnabled == 1){
 		WebKitSettings *settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
 		webkit_settings_set_enable_developer_extras(settings, TRUE);
 	}	
 
-	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
-	g_signal_connect( webview, "load-changed",					G_CALLBACK(on_load_changed), NULL);
-	g_signal_connect( webview, "load-failed",					G_CALLBACK(on_load_failed), NULL);
-	g_signal_connect( webview, "load-failed-with-tls-errors",	G_CALLBACK(on_load_failed_with_tls_errors), NULL);
-	g_signal_connect( webview, "script-dialog",					G_CALLBACK(on_script_dialog), NULL);
-	g_signal_connect( webview, "decide-policy",					G_CALLBACK(on_decide_policy), NULL);
-	g_signal_connect( webview, "ready-to-show",					G_CALLBACK(on_ready_to_show), NULL);
-	g_signal_connect( webview, "close",							G_CALLBACK(on_close), NULL);
-	g_signal_connect( webview, "context-menu",					G_CALLBACK(on_context_menu), NULL);
-    g_signal_connect( webview, "clicked",						G_CALLBACK(on_button_clicked), NULL);
-
+	g_signal_connect( window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	// Connect the load-changed signal to the callback function
+    g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);
+ 
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);
+
+	// Connect the document-loaded signal to the callback function
 
 	gresources = resources_get_resource();
 	g_resources_register(gresources);

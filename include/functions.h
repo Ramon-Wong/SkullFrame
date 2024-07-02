@@ -14,6 +14,7 @@ typedef struct{
 	char		name[128];
 	int			width;
 	int			height;
+	gboolean	fix_size;
 	char		uriPath[128];
 	int			developerEnabled;
 } CONFIG;

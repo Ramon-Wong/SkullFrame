@@ -12,6 +12,7 @@ int ReadXMLConfig(const char * filename, CONFIG * Config){
 		strcpy( Config->name, "GTK Default Window"); 
 		Config->width				= 800;		
 		Config->height				= 600;
+		Config->fix_size			= FALSE;
 		strcpy( Config->uriPath, "resources:///myapp/web/main.html");
 		Config->developerEnabled	= 0;
 
@@ -27,10 +28,22 @@ int ReadXMLConfig(const char * filename, CONFIG * Config){
 			char *name = (char *)xmlGetProp(node, (const xmlChar *)"name");
 			char *width = (char *)xmlGetProp(node, (const xmlChar *)"width");
 			char *height = (char *)xmlGetProp(node, (const xmlChar *)"height");
+			char *fixsize = (char *)xmlGetProp(node, (const xmlChar *)"nofix");
 
 			strcpy( Config->name, name);
 			Config->width    = atoi(width);
 			Config->height   = atoi(height);
+
+			// if( strcmp( fixsize, "FALSE") == 0 || strcmp( fixsize, "false") == 0){
+			// 	Config->fix_size = FALSE;
+			// 	printf("FALSE in fix size:\n");
+			// }
+
+			if( strcmp( fixsize, "TRUE") == 0 || strcmp( fixsize, "true") == 0){
+				Config->fix_size = TRUE;
+				printf("TRUE in fix size:\n");
+			}
+
 
 			// Free the attribute values
 			xmlFree(name);
@@ -54,6 +67,11 @@ int ReadXMLConfig(const char * filename, CONFIG * Config){
 			printf("	Name: %s\n", Config->name);
 			printf("	Width: %i\n", Config->width);
 			printf("	Height: %i\n", Config->height);
+			if(Config->fix_size){
+				printf("	fix window\n");
+			}else{
+				printf("	no fix window\n");
+			}
 			printf("	URI Path: %s\n", Config->uriPath);
 			printf("	Developer Enabled: %s\n", Config->developerEnabled ? "true" : "false");
 		}
