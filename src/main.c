@@ -57,13 +57,7 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 }
 
 
-// do we need this?
-void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
-    if (load_event == WEBKIT_LOAD_FINISHED) {
-        // All resources, including JavaScript, have been loaded and executed
-        g_print("Page fully loaded and JavaScript executed\n");
-    }
-}
+
 
 
 gboolean dispatch_custom_event(gpointer user_data) {
@@ -108,7 +102,7 @@ int main(int argc, char** argv) {
 
 	g_signal_connect( window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	// Connect the load-changed signal to the callback function
-    g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);
+    g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
  
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);
@@ -120,7 +114,7 @@ int main(int argc, char** argv) {
 
 	list_resources( gresources, "/");
 
-	g_timeout_add(5000, dispatch_custom_event, webview);
+	// g_timeout_add(5000, dispatch_custom_event, webview);
 
 	gtk_widget_show_all(window);
 	gtk_main();
