@@ -65,6 +65,20 @@ void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpoint
 }
 
 
+gboolean dispatch_custom_event(gpointer user_data) {
+    // WebKitWebView* webview = WEBKIT_WEB_VIEW(user_data);
+    const gchar* message = "Hello from C!";
+    gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
+    webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, web_view_javascript_finished, NULL);
+
+    g_free(js_code);
+
+    // Return TRUE to keep the timer running
+    return TRUE;
+}
+
+
+
 int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 	

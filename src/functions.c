@@ -3,7 +3,7 @@
 
 WebKitJavascriptResult * g_result;
 
-static void web_view_javascript_finished(GObject * object, GAsyncResult * result, gpointer user_data){
+void web_view_javascript_finished(GObject * object, GAsyncResult * result, gpointer user_data){
 
 	JSCValue               *value;
 	GError                 *error = NULL;

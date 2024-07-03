@@ -27,6 +27,11 @@ function testFunction() {
 	});
 }
 
+function checkHello(event) {
+	console.log("Event received: " + event.detail);
+	alert("Event received: " + event.detail);
+}
 
+window.addEventListener("hello_world", checkHello);
 
 onDeviceReady();

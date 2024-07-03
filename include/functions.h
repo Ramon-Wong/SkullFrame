@@ -29,4 +29,7 @@ void					  inject_Hook_functions(WebKitWebView *);
 
 int						  ReadXMLConfig(const char *, CONFIG *);
 const char				* insert_JSScript();
+
+void				  web_view_javascript_finished(GObject *, GAsyncResult *, gpointer);
+
 #endif
