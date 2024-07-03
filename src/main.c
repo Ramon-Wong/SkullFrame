@@ -57,6 +57,7 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 }
 
 
+// do we need this?
 void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
     if (load_event == WEBKIT_LOAD_FINISHED) {
         // All resources, including JavaScript, have been loaded and executed
