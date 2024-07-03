@@ -15,7 +15,7 @@
 
 void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
 
-	if(load_event == WEBKIT_LOAD_FINISHED){
+	if(load_event == WEBKIT_LOAD_STARTED){
 		g_print("on_load_changed >>> New Data Source Request has been made.\n");
 
 		const gchar* message = "WEBKIT_LOAD_FINISHED";
