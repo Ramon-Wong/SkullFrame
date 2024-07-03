@@ -69,7 +69,7 @@ gboolean dispatch_custom_event(gpointer user_data) {
     // WebKitWebView* webview = WEBKIT_WEB_VIEW(user_data);
     const gchar* message = "Hello from C!";
     gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
-    webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, web_view_javascript_finished, NULL);
+    webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
 
     g_free(js_code);
 
@@ -119,6 +119,8 @@ int main(int argc, char** argv) {
 	g_resources_register(gresources);
 
 	list_resources( gresources, "/");
+
+	g_timeout_add(5000, dispatch_custom_event, webview);
 
 	gtk_widget_show_all(window);
 	gtk_main();
