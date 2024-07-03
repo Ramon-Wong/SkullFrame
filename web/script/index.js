@@ -28,5 +28,16 @@ function testFunction() {
 }
 
 
+// add custom event 
+
+function checkHello(event) {
+	console.log("Event received: " + event.detail);
+	alert("Event received: " + event.detail);
+}
+
+window.addEventListener("hello_world", checkHello);
+
+// use window to listen to events!
+
 
 onDeviceReady();
