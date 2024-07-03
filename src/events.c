@@ -19,6 +19,6 @@ void on_load_changed(WebKitWebView *web_view, WebKitLoadEvent load_event, gpoint
 	}
 
 	if(load_event == WEBKIT_LOAD_FINISHED){
-		g_print("on_load_changed >>> Data Source requirements are fully loaded and executed.\n");
+		g_print("on_load_changed >>> Data Source requirements are fully loaded and executed.  \n");
 	}	
 }
