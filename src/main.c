@@ -71,9 +71,8 @@ gboolean dispatch_custom_event(gpointer user_data) {
     gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
     webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
 
-    g_free(js_code);
 
-    // Return TRUE to keep the timer running
+    g_free(js_code);
     return TRUE;
 }
 
