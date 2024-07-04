@@ -78,3 +78,15 @@ const gchar* Check_resources(  GResource * resources, const gchar *path, const g
     g_strfreev(children);
     return g_strdup("Not found");
 }
+
+
+// setting up C functions to be call from Javascript, G_CALLBACK(YOUR_FUNCTION_HERE)
+void initialize_C_Function(WebKitWebView* _webview, const gchar * js_function_name, GCallback cback, gpointer user_data){
+    WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(_webview);
+    // Add a script message handler
+    gchar * detailed_signal = g_strdup_printf("script-message-received::%s", js_function_name);
+
+    g_signal_connect(contentManager, detailed_signal, cback, user_data);
+    webkit_user_content_manager_register_script_message_handler(contentManager, js_function_name);
+    g_free(detailed_signal);
+}

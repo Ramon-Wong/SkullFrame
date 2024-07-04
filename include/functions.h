@@ -15,5 +15,5 @@ void					  list_resources( GResource *, const gchar*);
 const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 
 void					  inject_Hook_functions(WebKitWebView *);
-
+void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
 #endif
