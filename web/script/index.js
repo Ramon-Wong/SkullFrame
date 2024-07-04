@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click', () => { 
 		// console.log(callCHelloWorld());
-		ThisIsAFunction();
+		ThisIsAFunction(["What is one plus one"], function(result) { console.log("Received from C: " + result);});
 	});
 });
 
@@ -13,9 +13,9 @@ function onCFunctionReturn(result){
 	}
 }
    
-function ThisIsAFunction() {
+function ThisIsAFunction(message, callback) {
 	// window.onCFunctionCallback = callback;
-	window.webkit.messageHandlers.js_Call.postMessage();
+	window.webkit.messageHandlers.js_Call.postMessage(message);
 }
 
 window.onCFunctionReturn = onCFunctionReturn;
