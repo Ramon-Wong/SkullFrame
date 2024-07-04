@@ -95,7 +95,9 @@ void initialize_C_Function(WebKitWebView* webView) {
 	WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(webView);
 	// Add a script message handler
 
-	g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(C_HelloWorld1), NULL);
+	const gchar * func = "C_HelloWorld1";
+
+	g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(func), NULL);
 	webkit_user_content_manager_register_script_message_handler(contentManager, "js_Call");
 }
 
