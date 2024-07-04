@@ -30,10 +30,10 @@ const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 void					  inject_Hook_functions(WebKitWebView *);
 
 int						  ReadXMLConfig(const char *, CONFIG *);
-const char				* insert_JSScript();
-
+// const char				* insert_JSScript();
 // events
-void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
-void					  on_destroy_window( GtkWidget *, gpointer);
+// void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
+// void					  on_destroy_window( GtkWidget *, gpointer);
 
+void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
 #endif

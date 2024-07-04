@@ -91,24 +91,9 @@ void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* re
 }
 
 
-void initialize_C_Function(WebKitWebView* webView) {
-	WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(webView);
-	// Add a script message handler
+void inject_Hook_functions(WebKitWebView * _webview){
 
-	const gchar * func = "C_HelloWorld1";
-
-	g_signal_connect(contentManager, "script-message-received::js_Call", G_CALLBACK(func), NULL);
-	webkit_user_content_manager_register_script_message_handler(contentManager, "js_Call");
+    g_print("injecting Hook Functions");
+	initialize_C_Function( _webview, "js_Call", G_CALLBACK(C_HelloWorld1), NULL);
 }
-
-
-
-void inject_Hook_functions(WebKitWebView * webview){
-
-	g_print("injecting Hook Functions");
-	initialize_C_Function(webview);
-}
-
-
-
 
