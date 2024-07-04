@@ -81,7 +81,7 @@ const gchar* Check_resources(  GResource * resources, const gchar *path, const g
 
 
 const char * insert_JSScript(){
-
+    // use for functions.js
     const char * string = "function onDeviceReady() { console.log('Device is ready'); }";
     return string;
 }

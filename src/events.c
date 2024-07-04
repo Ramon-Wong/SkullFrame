@@ -60,5 +60,5 @@ void on_destroy_window(GtkWidget* widget, gpointer user_data) {
 
 	SendEventMessage( "WEBKIT_DESTROY");
 	// g_idle_add(quit_main_loop, NULL);
-    // gtk_main_quit();
+    gtk_main_quit();
 }

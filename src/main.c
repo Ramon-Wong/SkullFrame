@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
 
 
 	// Connect the load-changed signal to the callback function
-    g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
+    // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
 	g_signal_connect( window, "destroy", G_CALLBACK(on_destroy_window), NULL);	
  	// g_signal_connect( window, "destroy", G_CALLBACK(on_window_destroy), NULL); // gtk_main_quit
 
