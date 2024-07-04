@@ -36,4 +36,6 @@ const char				* insert_JSScript();
 void					  on_destroy_window( GtkWidget *, gpointer);
 
 void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
+
+
 #endif
