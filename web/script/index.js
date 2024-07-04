@@ -20,6 +20,21 @@ function ThisIsAFunction(message, callback) {
 
 window.onCFunctionReturn = onCFunctionReturn;
 
+//
+// js_DestroyWindow
+//
+
+
+
+// function DestroyWindow(message, callback) {
+// 	window.onCFunctionCallback = callback;
+// 	window.webkit.messageHandlers.js_DestroyWindow.postMessage(message);
+// }
+
+
+
+
+
 
 
 // WEBKIT_LOAD_FINISHED
