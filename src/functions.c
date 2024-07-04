@@ -113,3 +113,24 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
