@@ -34,5 +34,6 @@ const char				* insert_JSScript();
 
 // events
 void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
+void					  on_destroy_window( GtkWidget *, gpointer);
 
 #endif
