@@ -105,12 +105,24 @@ void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* re
 }
 
 
+gboolean dispatch_custom_event(gpointer user_data) {
+    // WebKitWebView* webview = WEBKIT_WEB_VIEW(user_data);
+    const gchar* message = "Hello from C!";
+    gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
+    webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
+
+    g_free(js_code);
+    return TRUE;
+}
+
 
 void inject_Hook_functions(WebKitWebView * _webview){
 
     g_print("injecting Hook Functions");
 	initialize_C_Function( _webview, "js_Call",				G_CALLBACK(C_HelloWorld1),		NULL);
 	initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL);
+
+    g_timeout_add( 10000, dispatch_custom_event, _webview);
 }
 
 
