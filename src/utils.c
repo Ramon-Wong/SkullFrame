@@ -94,6 +94,11 @@ const char * insert_JSScript(){
 	"\n	window.webkit.messageHandlers.js_Call.postMessage({});"
 	"\n}"
 	"\n\n"
+	"function js_DestroyWindow(){"
+	"\n	window.webkit.messageHandlers.js_DestroyWindow.postMessage({});"
+	"\n}"
+
+	"\n\n"
 	"window.onCFunctionReturn = onCFunctionReturn;";
 	return string;
 }

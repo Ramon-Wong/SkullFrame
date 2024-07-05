@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => { 
+	document.getElementById('Button2').addEventListener('click', () => { 
+		js_DestroyWindow();
+	});
+});
+
 
 
 
