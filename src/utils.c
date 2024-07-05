@@ -85,5 +85,3 @@ const char * insert_JSScript(){
     const char * string = "function onDeviceReady() { console.log('Device is ready'); }";
     return string;
 }
-
-

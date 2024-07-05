@@ -57,9 +57,6 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 }
 
 
-
-
-
 gboolean dispatch_custom_event(gpointer user_data) {
     // WebKitWebView* webview = WEBKIT_WEB_VIEW(user_data);
     const gchar* message = "Hello from C!";
@@ -70,7 +67,6 @@ gboolean dispatch_custom_event(gpointer user_data) {
     g_free(js_code);
     return TRUE;
 }
-
 
 
 int main(int argc, char** argv) {
