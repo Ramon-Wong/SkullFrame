@@ -1,18 +1,9 @@
 
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click', () => { 
-		window.webkit.messageHandlers.js_Call.postMessage({});
+		js_Call();	
 	});
 });
-
-
-function onCFunctionReturn(result) {
-    console.log("Received from C: " + result);
-}
-
-window.onCFunctionReturn = onCFunctionReturn;
-
-
 
 
 
