@@ -63,7 +63,6 @@ gboolean dispatch_custom_event(gpointer user_data) {
     gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
     webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
 
-
     g_free(js_code);
     return TRUE;
 }
@@ -96,10 +95,12 @@ int main(int argc, char** argv) {
 		webkit_settings_set_enable_developer_extras(settings, TRUE);
 	}	
 
-	g_signal_connect( window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
 	// Connect the load-changed signal to the callback function
-    g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
- 
+    // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
+	g_signal_connect( window, "destroy", G_CALLBACK(on_destroy_window), NULL);	
+ 	// g_signal_connect( window, "destroy", G_CALLBACK(on_window_destroy), NULL); // gtk_main_quit
+
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);
 
