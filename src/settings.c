@@ -34,16 +34,9 @@ int ReadXMLConfig(const char * filename, CONFIG * Config){
 			Config->width    = atoi(width);
 			Config->height   = atoi(height);
 
-			// if( strcmp( fixsize, "FALSE") == 0 || strcmp( fixsize, "false") == 0){
-			// 	Config->fix_size = FALSE;
-			// 	printf("FALSE in fix size:\n");
-			// }
-
 			if( strcmp( fixsize, "TRUE") == 0 || strcmp( fixsize, "true") == 0){
 				Config->fix_size = TRUE;
-				printf("TRUE in fix size:\n");
 			}
-
 
 			// Free the attribute values
 			xmlFree(name);

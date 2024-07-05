@@ -14,14 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function checkHello(event) {
-	console.log("Event received: " + event.detail);
-	alert("Event received: " + event.detail);
+	console.log("Event received: " + event.detail + "/" + Date.now());
+	// alert("Event received: " + event.detail);
 }
 
 window.addEventListener("hello_world", checkHello);
-
-// use window to listen to events!
-
+window.addEventListener("WEBKIT_DESTROY",	()=>{	alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
 
 
 // WEBKIT_LOAD_FINISHED
@@ -33,5 +31,3 @@ window.addEventListener("WEBKIT_LOAD_STARTED",		()=>{	console.log("WEBKIT_LOAD_S
 window.addEventListener("WEBKIT_LOAD_REDIRECTED",	()=>{	console.log("WEBKIT_LOAD_REDIRECTED");});
 window.addEventListener("WEBKIT_LOAD_COMMITTED",	()=>{	console.log("WEBKIT_LOAD_COMMITTED");});
 window.addEventListener("WEBKIT_LOAD_FINISHED", 	()=>{	console.log("WEBKIT_LOAD_FINISHED");});
-
-window.addEventListener("WEBKIT_DESTROY", 			()=>{	alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
