@@ -116,13 +116,41 @@ gboolean dispatch_custom_event(gpointer user_data) {
 }
 
 
+
+
+
+// void on_js_message(WebKitUserContentManager *manager, WebKitJavascriptResult *result, gpointer user_data) {
+    
+//     JSGlobalContextRef js_context = webkit_javascript_result_get_global_context(result);
+//     JSValueRef js_value = webkit_javascript_result_get_value(result);
+
+//     if (JSValueIsString(js_context, js_value)) {
+//         JSStringRef js_string = JSValueToStringCopy(js_context, js_value, NULL);
+//         size_t buffer_size = JSStringGetMaximumUTF8CStringSize(js_string);
+//         gchar *buffer = g_new(gchar, buffer_size);
+//         JSStringGetUTF8CString(js_string, buffer, buffer_size);
+
+//         g_print("Received message from JavaScript: %s\n", buffer);
+
+//         // Process the message and send back a response
+//         SendEventMessage("CFunctionReturn_js_Call", "42");
+
+//         JSStringRelease(js_string);
+//         g_free(buffer);
+//     }
+// }
+
+
+
+
+
 void inject_Hook_functions(WebKitWebView * _webview){
 
     g_print("injecting Hook Functions");
 	initialize_C_Function( _webview, "js_Call",				G_CALLBACK(C_HelloWorld1),		NULL);
 	initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL);
 
-    g_timeout_add( 10000, dispatch_custom_event, _webview);
+    // g_timeout_add( 10000, dispatch_custom_event, _webview);
 }
 
 

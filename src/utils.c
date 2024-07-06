@@ -97,7 +97,6 @@ const char * insert_JSScript(){
 	"function js_DestroyWindow(){"
 	"\n	window.webkit.messageHandlers.js_DestroyWindow.postMessage({});"
 	"\n}"
-
 	"\n\n"
 	"window.onCFunctionReturn = onCFunctionReturn;";
 	return string;
