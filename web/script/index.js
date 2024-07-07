@@ -45,18 +45,18 @@ function getSomething() {
 		const message	= "What's the meaning of life?";
 		const eventName = 'CFunctionReturn_js_Call';						// Define a unique event name
 		function onEvent(event) {											// Create an event listener for the custom event
+			console.log('Event received:', event);							// Log the entire event object
+			console.log('Event detail:', event.detail);						// Log the detail attached to the event			
 			resolve(event.detail);			
 			window.removeEventListener(eventName, onEvent);					// Remove the event listener after receiving the response
 		}		
 		window.addEventListener(eventName, onEvent);						// Add the event listener
 		window.webkit.messageHandlers.js_FuncCall.postMessage(message);		// Send the message to the native code ==> js_FuncCall
 	})
-	.then(result => {		
-		document.getElementById('result').innerText = 'result: ' + result;	// Handle the result when the Promise is fulfilled
+	.then(result => {
+		console.log('Event received:', result);       
 	})
 	.catch(error => {														// Handle any errors
-		console.error('Error:', error);
-		document.getElementById('result').innerText = 'Failed to get the answer.';
+		console.error('Error:', error);		
 	});
 }
-
