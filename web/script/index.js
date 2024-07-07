@@ -40,23 +40,52 @@ window.addEventListener("WEBKIT_LOAD_FINISHED", 	()=>{	console.log("WEBKIT_LOAD_
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function getSomething() {
-	return new Promise((resolve, reject) => {								// Create a Promise to handle the asynchronous response
-		const message	= "What's the meaning of life?";
-		const eventName = 'CFunctionReturn_js_Call';						// Define a unique event name
-		function onEvent(event) {											// Create an event listener for the custom event
-			console.log('Event received:', event);							// Log the entire event object
-			console.log('Event detail:', event.detail);						// Log the detail attached to the event			
-			resolve(event.detail);			
-			window.removeEventListener(eventName, onEvent);					// Remove the event listener after receiving the response
-		}		
-		window.addEventListener(eventName, onEvent);						// Add the event listener
-		window.webkit.messageHandlers.js_FuncCall.postMessage(message);		// Send the message to the native code ==> js_FuncCall
-	})
-	.then(result => {
-		console.log('Event received:', result);       
-	})
-	.catch(error => {														// Handle any errors
-		console.error('Error:', error);		
-	});
+// function getSomething() {
+// 	return new Promise((resolve, reject) => {								// Create a Promise to handle the asynchronous response
+// 		const message	= "What's the meaning of life?";
+// 		const eventName = 'CFunctionReturn_js_Call';						// Define a unique event name
+// 		function onEvent(event) {											// Create an event listener for the custom event
+// 			console.log('Event received:', event);							// Log the entire event object
+// 			console.log('Event detail:', event.detail);						// Log the detail attached to the event			
+// 			resolve(event.detail);			
+// 			window.removeEventListener(eventName, onEvent);					// Remove the event listener after receiving the response
+// 		}		
+// 		window.addEventListener(eventName, onEvent);						// Add the event listener
+// 		window.webkit.messageHandlers.js_FuncCall.postMessage(message);		// Send the message to the native code ==> js_FuncCall
+// 	})
+// 	.then(result => {
+// 		console.log('Event received:', result);       
+// 	})
+// 	.catch(error => {														// Handle any errors
+// 		console.error('Error:', error);		
+// 	});
+// }
+
+
+async function getSomething() {
+    const message = "What's the meaning of life?";
+    const eventName = 'CFunctionReturn_js_Call';
+
+    return new Promise((resolve, reject) => {
+        function onEvent(event) {
+            console.log('Event received:', event);
+            console.log('Event detail:', event.detail);
+            resolve(event.detail);
+            window.removeEventListener(eventName, onEvent);
+        }
+
+        window.addEventListener(eventName, onEvent);
+        window.webkit.messageHandlers.js_FuncCall.postMessage(message);
+    });
 }
+
+// Usage example:
+// (async () => {
+// 	try{
+// 		const result = await getSomething();
+// 		console.log('Result received:', result);
+// 		// You can now use the result here
+// 	}catch(error){
+// 		console.error('Error:', error);
+// 	}
+// })();
