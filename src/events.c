@@ -56,7 +56,7 @@ gboolean quit_main_loop(gpointer user_data) {
 
 
 void on_destroy_window(GtkWidget* widget, gpointer user_data) {
-    g_print("Window is being destroyed\n");
+    g_print("Window is being destroyed, sending message to JSCore. \n");
 
 	SendEventMessage( "MAIN_THREAD_DESTROY_REQUEST", "MAIN_THREAD_DESTROY_REQUEST");
 	// g_idle_add(quit_main_loop, NULL);

@@ -117,13 +117,25 @@ gboolean dispatch_custom_event(gpointer user_data) {
 }
 
 void JSCore_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
-	g_print("JSCore_Destroy, got your call from JavaScript\n");
+	g_print("JSCore_Destroy, got your signal from JavaScript\n");
 
-	quit_main_loop();
 	g_result = result;
-
+	gtk_main_quit();
 }
 
+
+void JSCORE_MessageLog(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	JSCValue * value = webkit_javascript_result_get_js_value(result);
+
+	if(jsc_value_is_string(value)){						// Check if the value is a string
+		gchar *message = jsc_value_to_string(value);
+		g_print("JSCore Message: %s\n", message);
+
+		g_free(message);
+	} else {
+		g_print("JSCore Message Error: Message is not a string.\n");
+	}
+}
 
 
 // void on_js_message(WebKitUserContentManager *manager, WebKitJavascriptResult *result, gpointer user_data) {
@@ -155,8 +167,9 @@ void inject_Hook_functions(WebKitWebView * _webview){
 
 	g_print("injecting Hook Functions");
 	initialize_C_Function( _webview, "js_Call",				G_CALLBACK(C_HelloWorld1),		NULL);
-	initialize_C_Function( _webview, "js_FuncCall",         G_CALLBACK(C_HelloWorld2),	    NULL);
-	initialize_C_Function( _webview, "JSCore_Destroy",		G_CALLBACK(JSCore_Destroy),	    NULL);
+	initialize_C_Function( _webview, "js_FuncCall",			G_CALLBACK(C_HelloWorld2),		NULL);
+	initialize_C_Function( _webview, "JSCore_Destroy",		G_CALLBACK(JSCore_Destroy),		NULL);
+	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 	// initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL); C_HelloWorld2
 	// g_timeout_add( 10000, dispatch_custom_event, _webview);
 }

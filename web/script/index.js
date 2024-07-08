@@ -33,7 +33,7 @@ window.addEventListener("WEBKIT_LOAD_REDIRECTED",	    ()=>{	console.log("WEBKIT_
 window.addEventListener("WEBKIT_LOAD_COMMITTED",	    ()=>{	console.log("WEBKIT_LOAD_COMMITTED");});
 window.addEventListener("WEBKIT_LOAD_FINISHED", 	    ()=>{	console.log("WEBKIT_LOAD_FINISHED");});
 
-window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	console.log("WEBKIT_LOAD_FINISHED");});
+window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	Cleanup_Before_Destroy();});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -62,16 +62,17 @@ window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	console.log("WEBKI
 // 	});
 // }
 
+JSCORE_MessageLog("\n\n JSCORE MESSAGE LOG TEST \n\n");
 
-async function DESTROY_REQUEST(){
+async function Cleanup_Before_Destroy(){
     console.log("MAIN_THREAD_DESTROY_REQUEST");
-
+    // JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 1");
     await saveData();
     await releaseObjects();
     flushToilet();
+    // JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 2");
 
-    window.removeEventListener(eventName, onEvent);
-    JSCore_Destroy();
+    window.removeEventListener("MAIN_THREAD_DESTROY_REQUEST", Cleanup_Before_Destroy);
 }
 
 
@@ -81,7 +82,8 @@ function saveData() {
         setTimeout(() => {
             console.log("Data saved");
             resolve();
-        }, 1000); // Adjust time as necessary
+            JSCore_Destroy();
+        }, 10000000); // Adjust time as necessary
     });
 }
 
@@ -91,7 +93,7 @@ function releaseObjects() {
         setTimeout(() => {
             console.log("Objects released");
             resolve();
-        }, 1000); // Adjust time as necessary
+        }, 5000000); // Adjust time as necessary
     });
 }
 
