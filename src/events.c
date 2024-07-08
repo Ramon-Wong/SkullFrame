@@ -21,15 +21,6 @@ void SendEventMessage(  const gchar * event_name, const gchar * event_data){
 }
 
 
-// void SendEventMessage( const gchar *event_name, const gchar *event_data){
-//     gchar *js_code = g_strdup_printf(
-//         "var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);", event_name, event_data);
-    // webkit_web_view_run_javascript( webview, js_code, NULL, NULL, NULL);
-//     g_free(js_code);
-// }
-
-
-
 void on_load_changed( WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
 
 	if(load_event == WEBKIT_LOAD_STARTED){
@@ -63,10 +54,11 @@ gboolean quit_main_loop(gpointer user_data) {
     return FALSE; // Return FALSE to remove the idle function
 }
 
+
 void on_destroy_window(GtkWidget* widget, gpointer user_data) {
     g_print("Window is being destroyed\n");
 
-	SendEventMessage( "WEBKIT_DESTROY", "DESTROY");
+	SendEventMessage( "MAIN_THREAD_DESTROY_REQUEST", "MAIN_THREAD_DESTROY_REQUEST");
 	// g_idle_add(quit_main_loop, NULL);
     gtk_main_quit();
 }

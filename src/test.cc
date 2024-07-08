@@ -1,15 +1,16 @@
 #include <webkit2/webkit2.h>
 #include <gtk/gtk.h>
 
+
+
 WebKitWebView *global_webview;
 
 void SendEventMessage(const gchar *msg, const gchar *data) {
-    gchar *js_code = g_strdup_printf(
-        "var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);",
-        msg, data);
-    webkit_web_view_run_javascript(global_webview, js_code, NULL, NULL, NULL);
+    gchar *js_code = g_strdup_printf("var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);", msg, data);
+    webkit_web_view_run_javascript( global_webview, js_code, NULL, NULL, NULL);
     g_free(js_code);
 }
+
 
 void on_js_message(WebKitUserContentManager *manager, WebKitJavascriptResult *result, gpointer user_data) {
     JSGlobalContextRef js_context = webkit_javascript_result_get_global_context(result);
@@ -31,6 +32,7 @@ void on_js_message(WebKitUserContentManager *manager, WebKitJavascriptResult *re
     }
 }
 
+
 void initialize_C_Function(WebKitWebView *_webview, const gchar *js_function_name, GCallback cback, gpointer user_data) {
     WebKitUserContentManager *contentManager = webkit_web_view_get_user_content_manager(_webview);
     gchar *detailed_signal = g_strdup_printf("script-message-received::%s", js_function_name);
@@ -39,6 +41,7 @@ void initialize_C_Function(WebKitWebView *_webview, const gchar *js_function_nam
     webkit_user_content_manager_register_script_message_handler(contentManager, js_function_name);
     g_free(detailed_signal);
 }
+
 
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);

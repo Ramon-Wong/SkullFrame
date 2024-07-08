@@ -28,11 +28,12 @@ window.addEventListener("WEBKIT_DESTROY",	()=>{	alert("This is an alert box!"); 
 // WEBKIT_LOAD_COMMITTED
 // WEBKIT_LOAD_FINISHED
 
-window.addEventListener("WEBKIT_LOAD_STARTED",		()=>{	console.log("WEBKIT_LOAD_STARTED");});
-window.addEventListener("WEBKIT_LOAD_REDIRECTED",	()=>{	console.log("WEBKIT_LOAD_REDIRECTED");});
-window.addEventListener("WEBKIT_LOAD_COMMITTED",	()=>{	console.log("WEBKIT_LOAD_COMMITTED");});
-window.addEventListener("WEBKIT_LOAD_FINISHED", 	()=>{	console.log("WEBKIT_LOAD_FINISHED");});
+window.addEventListener("WEBKIT_LOAD_STARTED",		    ()=>{	console.log("WEBKIT_LOAD_STARTED");});
+window.addEventListener("WEBKIT_LOAD_REDIRECTED",	    ()=>{	console.log("WEBKIT_LOAD_REDIRECTED");});
+window.addEventListener("WEBKIT_LOAD_COMMITTED",	    ()=>{	console.log("WEBKIT_LOAD_COMMITTED");});
+window.addEventListener("WEBKIT_LOAD_FINISHED", 	    ()=>{	console.log("WEBKIT_LOAD_FINISHED");});
 
+window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	console.log("WEBKIT_LOAD_FINISHED");});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -60,6 +61,45 @@ window.addEventListener("WEBKIT_LOAD_FINISHED", 	()=>{	console.log("WEBKIT_LOAD_
 // 		console.error('Error:', error);		
 // 	});
 // }
+
+
+async function DESTROY_REQUEST(){
+    console.log("MAIN_THREAD_DESTROY_REQUEST");
+
+    await saveData();
+    await releaseObjects();
+    flushToilet();
+
+    window.removeEventListener(eventName, onEvent);
+    JSCore_Destroy();
+}
+
+
+function saveData() {
+    return new Promise((resolve) => {
+        // Simulate saving data with a timeout
+        setTimeout(() => {
+            console.log("Data saved");
+            resolve();
+        }, 1000); // Adjust time as necessary
+    });
+}
+
+function releaseObjects() {
+    return new Promise((resolve) => {
+        // Simulate releasing objects with a timeout
+        setTimeout(() => {
+            console.log("Objects released");
+            resolve();
+        }, 1000); // Adjust time as necessary
+    });
+}
+
+function flushToilet() {
+    console.log("Toilet flushed");
+    // Simulate flushing toilet
+    // This can be synchronous if it's quick
+}
 
 
 async function getSomething() {

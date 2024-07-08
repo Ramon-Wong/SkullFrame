@@ -116,7 +116,13 @@ gboolean dispatch_custom_event(gpointer user_data) {
 	return TRUE;
 }
 
+void JSCore_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	g_print("JSCore_Destroy, got your call from JavaScript\n");
 
+	quit_main_loop();
+	g_result = result;
+
+}
 
 
 
@@ -150,6 +156,7 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	g_print("injecting Hook Functions");
 	initialize_C_Function( _webview, "js_Call",				G_CALLBACK(C_HelloWorld1),		NULL);
 	initialize_C_Function( _webview, "js_FuncCall",         G_CALLBACK(C_HelloWorld2),	    NULL);
+	initialize_C_Function( _webview, "JSCore_Destroy",		G_CALLBACK(JSCore_Destroy),	    NULL);
 	// initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL); C_HelloWorld2
 	// g_timeout_add( 10000, dispatch_custom_event, _webview);
 }
