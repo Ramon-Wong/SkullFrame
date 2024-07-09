@@ -10,7 +10,7 @@
 #include "resources.h"
 
 
-typedef struct{				
+typedef struct{
 	char		name[128];
 	int			width;
 	int			height;
@@ -19,24 +19,20 @@ typedef struct{
 	int			developerEnabled;
 } CONFIG;
 
-
 extern WebKitWebView	* webview;
+extern GtkWidget		* window;
+
 const gchar				* get_file_extension(const gchar *);
 void					  list_resources( GResource *, const gchar*); 
 const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 
-
-
 void					  inject_Hook_functions(WebKitWebView *);
-
 int						  ReadXMLConfig(const char *, CONFIG *);
 const char				* insert_JSScript();
 // events
 // void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
-void					  on_destroy_window( GtkWidget *, gpointer);
-
+gboolean				  on_destroy_window( GtkWidget *, GdkEvent *, gpointer);
 void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
-
 void					  SendEventMessage( const gchar *, const gchar *);
 
 #endif

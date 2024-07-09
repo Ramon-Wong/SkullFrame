@@ -1,9 +1,10 @@
 #include "functions.h"
 
 
-GResource 			* 	gresources;
-WebKitWebView		* 	webview;
-CONFIG 					Global_Config;
+GResource 			* gresources;
+WebKitWebView		* webview;
+GtkWidget			* window;
+CONFIG 				  Global_Config;
 
 
 void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer user_data) {
@@ -72,7 +73,8 @@ int main(int argc, char** argv) {
 	webkit_web_context_register_uri_scheme(context, scheme, my_uri_scheme_request_callback, NULL, NULL);
 
 	webview						= WEBKIT_WEB_VIEW(webkit_web_view_new_with_context(context));
-	GtkWidget* window			= gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window						= gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
 	gtk_window_set_title(GTK_WINDOW(window), Global_Config.name);
 	gtk_window_set_default_size(GTK_WINDOW(window), Global_Config.width, Global_Config.height);
 	gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(webview));
@@ -87,7 +89,7 @@ int main(int argc, char** argv) {
 
 	// Connect the load-changed signal to the callback function
     // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
-	g_signal_connect( window, "destroy", G_CALLBACK(on_destroy_window), NULL);	
+	g_signal_connect( window, "delete-event", G_CALLBACK(on_destroy_window), NULL);	
  	// g_signal_connect( window, "destroy", G_CALLBACK(on_window_destroy), NULL); // gtk_main_quit
 
 	inject_Hook_functions(webview);

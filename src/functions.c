@@ -120,6 +120,8 @@ void JSCore_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* r
 	g_print("JSCore_Destroy, got your signal from JavaScript\n");
 
 	g_result = result;
+
+    gtk_widget_destroy(window); 
 	gtk_main_quit();
 }
 

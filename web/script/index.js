@@ -1,7 +1,8 @@
 
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click', () => { 
-		js_Call();	
+		// js_Call();
+		JSCORE_MessageLog("Button 1 smash");
 	});
 });
 
@@ -9,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('Button2').addEventListener('click', () => { 
 		// js_DestroyWindow();
-		getSomething();
+		// getSomething();
+		JSCORE_MessageLog("Button 2 smash");
 	});
 });
 
@@ -62,63 +64,68 @@ window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	Cleanup_Before_Des
 // 	});
 // }
 
-JSCORE_MessageLog("\n\n JSCORE MESSAGE LOG TEST \n\n");
+function Cleanup_Before_Destroy1(){
+	console.log("MAIN_THREAD_DESTROY_REQUEST");
+	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 1");
+}
+
 
 async function Cleanup_Before_Destroy(){
-    console.log("MAIN_THREAD_DESTROY_REQUEST");
-    // JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 1");
-    await saveData();
-    await releaseObjects();
-    flushToilet();
-    // JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 2");
-
-    window.removeEventListener("MAIN_THREAD_DESTROY_REQUEST", Cleanup_Before_Destroy);
+	console.log("MAIN_THREAD_DESTROY_REQUEST");
+	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 1");
+	await saveData();
+	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 2");	
+	await releaseObjects();
+	// flushToilet();
+	window.removeEventListener("MAIN_THREAD_DESTROY_REQUEST", Cleanup_Before_Destroy);
+	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 3");
+	JSCore_Destroy();	
+	JSCORE_MessageLog("We'll never reach here...");
 }
 
 
 function saveData() {
-    return new Promise((resolve) => {
-        // Simulate saving data with a timeout
-        setTimeout(() => {
-            console.log("Data saved");
-            resolve();
-            JSCore_Destroy();
-        }, 10000000); // Adjust time as necessary
-    });
+	return new Promise((resolve) => {
+		// Simulate saving data with a timeout
+		setTimeout(() => {
+			JSCORE_MessageLog("save Data");
+			resolve();
+		}, 4000); // Adjust time as necessary
+	});
 }
 
 function releaseObjects() {
-    return new Promise((resolve) => {
-        // Simulate releasing objects with a timeout
-        setTimeout(() => {
-            console.log("Objects released");
-            resolve();
-        }, 5000000); // Adjust time as necessary
-    });
+	return new Promise((resolve) => {
+		// Simulate releasing objects with a timeout
+		setTimeout(() => {
+			JSCORE_MessageLog("Object Released");
+			resolve();
+		}, 2000); // Adjust time as necessary
+	});
 }
 
 function flushToilet() {
-    console.log("Toilet flushed");
-    // Simulate flushing toilet
-    // This can be synchronous if it's quick
+	console.log("Toilet flushed");
+	// Simulate flushing toilet
+	// This can be synchronous if it's quick
 }
 
 
 async function getSomething() {
-    const message = "What's the meaning of life?";
-    const eventName = 'CFunctionReturn_js_Call';
+	const message = "What's the meaning of life?";
+	const eventName = 'CFunctionReturn_js_Call';
 
-    return new Promise((resolve, reject) => {
-        function onEvent(event) {
-            console.log('Event received:', event);
-            console.log('Event detail:', event.detail);
-            resolve(event.detail);
-            window.removeEventListener(eventName, onEvent);
-        }
+	return new Promise((resolve, reject) => {
+		function onEvent(event) {
+			console.log('Event received:', event);
+			console.log('Event detail:', event.detail);
+			resolve(event.detail);
+			window.removeEventListener(eventName, onEvent);
+		}
 
-        window.addEventListener(eventName, onEvent);
-        window.webkit.messageHandlers.js_FuncCall.postMessage(message);
-    });
+		window.addEventListener(eventName, onEvent);
+		window.webkit.messageHandlers.js_FuncCall.postMessage(message);
+	});
 }
 
 // Usage example:

@@ -18,7 +18,7 @@ void SendEventMessage(  const gchar * event_name, const gchar * event_data){
 	gchar* js_code = g_strdup_printf("var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);", event_name, event_data);
 	webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
 	g_free(js_code);
-}
+} 
 
 
 void on_load_changed( WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
@@ -55,10 +55,11 @@ gboolean quit_main_loop(gpointer user_data) {
 }
 
 
-void on_destroy_window(GtkWidget* widget, gpointer user_data) {
-    g_print("Window is being destroyed, sending message to JSCore. \n");
+gboolean on_destroy_window(  GtkWidget *widget, GdkEvent *event, gpointer user_data) {
+    g_print(">>on_destroy_window<< Window is being destroyed, sending message to JSCore. \n");
 
 	SendEventMessage( "MAIN_THREAD_DESTROY_REQUEST", "MAIN_THREAD_DESTROY_REQUEST");
 	// g_idle_add(quit_main_loop, NULL);
-    gtk_main_quit();
+    // gtk_main_quit();
+	return TRUE;
 }
