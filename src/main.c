@@ -86,12 +86,11 @@ int main(int argc, char** argv) {
 		webkit_settings_set_enable_developer_extras(settings, TRUE);
 	}	
 
-
 	// Connect the load-changed signal to the callback function
     // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
+	// on_destroy_window basically send an event signal to Javascript Core, source > events.c
 	g_signal_connect( window, "delete-event", G_CALLBACK(on_destroy_window), NULL);	
- 	// g_signal_connect( window, "destroy", G_CALLBACK(on_window_destroy), NULL); // gtk_main_quit
-
+ 
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);
 
