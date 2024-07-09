@@ -80,43 +80,4 @@ const gchar* Check_resources(  GResource * resources, const gchar *path, const g
 }
 
 
-const char * insert_JSScript(){
-	// use for functions.js
-	const char * string =
-	"//For updates, check on the const char * insert_JSScript() in utils.c \n\n"
-	"function onDeviceReady(){ console.log('Device is ready'); }"
-	"\n\n"
-	"function onCFunctionReturn(result){"
-	"\n	console.log('Received from C: ' + result);"
-	"\n}"
-	"\n\n"
-	"function js_Call(){"
-	"\n	window.webkit.messageHandlers.js_Call.postMessage({});"
-	"\n}"
-	"\n\n"
-	"//function js_DestroyWindow(){"
-	"\n//	window.webkit.messageHandlers.js_DestroyWindow.postMessage({});"
-	"\n//}"
-	"\n\n"
-	"function JSCore_Destroy(){"
-	"\n	window.webkit.messageHandlers.JSCore_Destroy.postMessage({});"
-	"\n}"
-	"\n\n"
-	"function JSCORE_MessageLog(msg){"
-	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
-	"\n}"
-	"\n\n"
-	"window.onCFunctionReturn = onCFunctionReturn;";
-	return string;
-}
 
-// setting up C functions to be call from Javascript, G_CALLBACK(YOUR_FUNCTION_HERE)
-void initialize_C_Function(WebKitWebView* _webview, const gchar * js_function_name, GCallback cback, gpointer user_data){
-	WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(_webview);
-	// Add a script message handler
-	gchar * detailed_signal = g_strdup_printf("script-message-received::%s", js_function_name);
-
-	g_signal_connect(contentManager, detailed_signal, cback, user_data);
-	webkit_user_content_manager_register_script_message_handler(contentManager, js_function_name);
-	g_free(detailed_signal);
-}

@@ -140,31 +140,6 @@ void JSCORE_MessageLog(WebKitUserContentManager* manager, WebKitJavascriptResult
 }
 
 
-// void on_js_message(WebKitUserContentManager *manager, WebKitJavascriptResult *result, gpointer user_data) {
-	
-//     JSGlobalContextRef js_context = webkit_javascript_result_get_global_context(result);
-//     JSValueRef js_value = webkit_javascript_result_get_value(result);
-
-//     if (JSValueIsString(js_context, js_value)) {
-//         JSStringRef js_string = JSValueToStringCopy(js_context, js_value, NULL);
-//         size_t buffer_size = JSStringGetMaximumUTF8CStringSize(js_string);
-//         gchar *buffer = g_new(gchar, buffer_size);
-//         JSStringGetUTF8CString(js_string, buffer, buffer_size);
-
-//         g_print("Received message from JavaScript: %s\n", buffer);
-
-//         // Process the message and send back a response
-//         SendEventMessage("CFunctionReturn_js_Call", "42");
-
-//         JSStringRelease(js_string);
-//         g_free(buffer);
-//     }
-// }
-
-
-
-
-
 void inject_Hook_functions(WebKitWebView * _webview){
 
 	g_print("injecting Hook Functions");
@@ -174,4 +149,47 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 	// initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL); C_HelloWorld2
 	// g_timeout_add( 10000, dispatch_custom_event, _webview);
+}
+
+
+const char * insert_JSScript(){
+	// use for functions.js
+	const char * string =
+	"//For updates, check on the const char * insert_JSScript() in utils.c \n\n"
+	"function onDeviceReady(){ console.log('Device is ready'); }"
+	"\n\n"
+	"function onCFunctionReturn(result){"
+	"\n	console.log('Received from C: ' + result);"
+	"\n}"
+	"\n\n"
+	"function js_Call(){"
+	"\n	window.webkit.messageHandlers.js_Call.postMessage({});"
+	"\n}"
+	"\n\n"
+	"//function js_DestroyWindow(){"
+	"\n//	window.webkit.messageHandlers.js_DestroyWindow.postMessage({});"
+	"\n//}"
+	"\n\n"
+	"function JSCore_Destroy(){"
+	"\n	window.webkit.messageHandlers.JSCore_Destroy.postMessage({});"
+	"\n}"
+	"\n\n"
+	"function JSCORE_MessageLog(msg){"
+	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
+	"\n}"
+	"\n\n"
+	"window.onCFunctionReturn = onCFunctionReturn;";
+	return string;
+}
+
+
+// setting up C functions to be call from Javascript, G_CALLBACK(YOUR_FUNCTION_HERE)
+void initialize_C_Function(WebKitWebView* _webview, const gchar * js_function_name, GCallback cback, gpointer user_data){
+	WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(_webview);
+	// Add a script message handler
+	gchar * detailed_signal = g_strdup_printf("script-message-received::%s", js_function_name);
+
+	g_signal_connect(contentManager, detailed_signal, cback, user_data);
+	webkit_user_content_manager_register_script_message_handler(contentManager, js_function_name);
+	g_free(detailed_signal);
 }
