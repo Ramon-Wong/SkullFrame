@@ -106,15 +106,16 @@ void C_HelloWorld3(WebKitUserContentManager* manager, WebKitJavascriptResult* re
 }
 
 
-gboolean dispatch_custom_event(gpointer user_data) {
-	// WebKitWebView* webview = WEBKIT_WEB_VIEW(user_data);
-	const gchar* message = "Hello from C!";
-	gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
-	webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
+// gboolean dispatch_custom_event(gpointer user_data) {
+// 	// WebKitWebView* webview = WEBKIT_WEB_VIEW(user_data);
+// 	const gchar* message = "Hello from C!";
+// 	gchar* js_code = g_strdup_printf("var event = new CustomEvent('hello_world', { detail: '%s' }); window.dispatchEvent(event);", message);
+// 	webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
 
-	g_free(js_code);
-	return TRUE;
-}
+// 	g_free(js_code);
+// 	return TRUE;
+// }
+
 
 void JSCore_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	g_print("JSCore_Destroy, got your signal from JavaScript\n");
@@ -147,8 +148,6 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "js_FuncCall",			G_CALLBACK(C_HelloWorld2),		NULL);
 	initialize_C_Function( _webview, "JSCore_Destroy",		G_CALLBACK(JSCore_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
-	// initialize_C_Function( _webview, "js_DestroyWindow",	G_CALLBACK(C_DestroyWindow),	NULL); C_HelloWorld2
-	// g_timeout_add( 10000, dispatch_custom_event, _webview);
 }
 
 
@@ -183,7 +182,7 @@ const char * insert_JSScript(){
 }
 
 
-// setting up C functions to be call from Javascript, G_CALLBACK(YOUR_FUNCTION_HERE)
+// setting up C functions to be call from Javascript, example in inject_Hook_functions
 void initialize_C_Function(WebKitWebView* _webview, const gchar * js_function_name, GCallback cback, gpointer user_data){
 	WebKitUserContentManager* contentManager = webkit_web_view_get_user_content_manager(_webview);
 	// Add a script message handler
@@ -193,3 +192,11 @@ void initialize_C_Function(WebKitWebView* _webview, const gchar * js_function_na
 	webkit_user_content_manager_register_script_message_handler(contentManager, js_function_name);
 	g_free(detailed_signal);
 }
+
+
+// important function, this function send event message to JSCore
+void SendEventMessage(  const gchar * event_name, const gchar * event_data){
+	gchar* js_code = g_strdup_printf("var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);", event_name, event_data);
+	webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
+	g_free(js_code);
+} 

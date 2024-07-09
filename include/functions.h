@@ -34,5 +34,5 @@ const char				* insert_JSScript();
 gboolean				  on_destroy_window( GtkWidget *, GdkEvent *, gpointer);
 void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
 void					  SendEventMessage( const gchar *, const gchar *);
-
+						  
 #endif

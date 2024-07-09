@@ -14,11 +14,7 @@
 
 
 
-void SendEventMessage(  const gchar * event_name, const gchar * event_data){
-	gchar* js_code = g_strdup_printf("var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);", event_name, event_data);
-	webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
-	g_free(js_code);
-} 
+
 
 
 void on_load_changed( WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
