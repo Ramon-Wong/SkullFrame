@@ -25,7 +25,7 @@ all:
 		echo "compiling and building your shit"; \
 		echo "list of sources: $(ALL_SOURCE)"; \
 		$(CC) $(build) $(TARGET) $(ALL_SOURCE) -I include $(PKG_FLAGS); \
-		echo "..Size of $(TARGET) is $$(($(TARGET_SIZE) / 1024)) KBytes"; \
+		echo "..Size of $(TARGET) is $$(($(TARGET_SIZE) / 1024)) KB"; \
 		echo "..Done!!, run 'make run' to test\n"; \
 	else \
 		echo "One or both of the resources.xml files does not exist."; \
