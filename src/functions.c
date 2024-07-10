@@ -13,8 +13,8 @@ void insert_JSscript( const char * script, const gsize length, WebKitURISchemeRe
 }
 
 
-void JSCore_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
-	g_print("JSCore_Destroy, got your signal from JavaScript\n");
+void JSCORE_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	g_print("JSCORE_Destroy, got your signal from JavaScript\n");
 
 	g_result = result;
 
@@ -28,7 +28,7 @@ void JSCORE_MessageLog(WebKitUserContentManager* manager, WebKitJavascriptResult
 
 	if(jsc_value_is_string(value)){						// Check if the value is a string
 		gchar *message = jsc_value_to_string(value);
-		g_print("JSCore Message: %s\n", message);
+		g_print("JSCORE Message: %s\n", message);
 
 		g_free(message);
 	} else {
@@ -40,8 +40,11 @@ void JSCORE_MessageLog(WebKitUserContentManager* manager, WebKitJavascriptResult
 void inject_Hook_functions(WebKitWebView * _webview){
 
 	g_print("injecting Hook Functions");
-	g_signal_connect( window, "delete-event", G_CALLBACK(on_destroy_window), NULL);		
-	initialize_C_Function( _webview, "JSCore_Destroy",		G_CALLBACK(JSCore_Destroy),		NULL);
+	// connect C main events to functions 
+	g_signal_connect( window, "delete-event", 				G_CALLBACK(on_destroy_window), NULL);
+
+	// bind C functions to JS > window.webkit.messageHandlers.js_Functions.postMessage({}) 
+	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 }
 
@@ -55,12 +58,8 @@ const char * insert_Functions_JS(){
 	"\n	console.log('Received from C: ' + result);"
 	"\n}"
 	"\n\n"
-	"function js_Call(){"
-	"\n	window.webkit.messageHandlers.js_Call.postMessage({});"
-	"\n}"
-	"\n\n"
-	"function JSCore_Destroy(){"
-	"\n	window.webkit.messageHandlers.JSCore_Destroy.postMessage({});"
+	"function JSCORE_Destroy(){"
+	"\n	window.webkit.messageHandlers.JSCORE_Destroy.postMessage({});"
 	"\n}"
 	"\n\n"
 	"function JSCORE_MessageLog(msg){"

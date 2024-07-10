@@ -59,7 +59,7 @@ async function Cleanup_Before_Destroy(){
 	await releaseObjects();	
 	window.removeEventListener("MAIN_THREAD_DESTROY_REQUEST", Cleanup_Before_Destroy);
 	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 3");
-	JSCore_Destroy();	
+	JSCORE_Destroy();
 	JSCORE_MessageLog("We'll never reach here...");
 }
 

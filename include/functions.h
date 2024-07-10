@@ -29,7 +29,7 @@ const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 void					  inject_Hook_functions(WebKitWebView *);
 int						  ReadXMLConfig(const char *, CONFIG *);
 const char				* insert_Functions_JS();
-const char				* insert_JSScript(const char * script, const gsize length, WebKitURISchemeRequest* request);
+void					  insert_JSscript(const char * script, const gsize length, WebKitURISchemeRequest* request);
 
 // events
 // void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
