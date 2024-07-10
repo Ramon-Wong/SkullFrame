@@ -9,7 +9,7 @@ SkullFrame is a lightweight and flexible framework designed for integrating web 
 - **WebKitGTK Integration**: Easily embed web content in your C applications using the WebKitGTK library.
 - **JavaScript-C Interaction**: Call C functions from JavaScript and vice versa, enabling rich, interactive web applications.
 - **Event Handling**: Listen for and respond to various events, such as size changes and user interactions, within your web view.
-- **Lightweight and Fast**: Designed to be minimal and efficient, ensuring your applications remain responsive.
+- **Lightweight and Fast**: Designed to be minimal and efficient, ensuring your applications remain responsive and small.
 - **Extensible**: Built with flexibility in mind, allowing you to extend and customize the framework to suit your needs.
 
 ## Getting Started
