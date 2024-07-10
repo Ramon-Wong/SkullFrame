@@ -15,15 +15,11 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 	gsize data_length = 0;
 	const gchar* mime_type = "text/html";
 
+	// insert functions.js script into our project..
 	if( g_strcmp0( "/myapp/web/script/functions.js", path) == 0){
 		g_print("\tUsing system js script \n"); 
 
-		const char *functions_js_content = insert_JSScript();
-		const gsize functions_js_length = strlen(insert_JSScript());
-
-		GInputStream* stream = g_memory_input_stream_new_from_data( functions_js_content, functions_js_length, NULL);
-		webkit_uri_scheme_request_finish( request, stream, functions_js_length, "application/javascript");
-		g_object_unref(stream);		
+		insert_JSscript( insert_Functions_JS(), strlen(insert_Functions_JS()), request);
 	}
 
 	if( g_strcmp0( Check_resources( gresources, "/", path), path) == 0){
@@ -85,11 +81,6 @@ int main(int argc, char** argv) {
 		WebKitSettings *settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
 		webkit_settings_set_enable_developer_extras(settings, TRUE);
 	}	
-
-	// Connect the load-changed signal to the callback function
-    // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);				//	G_CALLBACK(on_load_changed) => events.c
-	// on_destroy_window basically send an event signal to Javascript Core, source > events.c
-	g_signal_connect( window, "delete-event", G_CALLBACK(on_destroy_window), NULL);	
  
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);

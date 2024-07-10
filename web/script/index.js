@@ -36,33 +36,13 @@ window.addEventListener("WEBKIT_LOAD_COMMITTED",	    ()=>{	console.log("WEBKIT_L
 window.addEventListener("WEBKIT_LOAD_FINISHED", 	    ()=>{	console.log("WEBKIT_LOAD_FINISHED");});
 
 window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	Cleanup_Before_Destroy();});
+// how system handle kill request..
+// in C main if it detect the kill signal "delete-event"
+// if detected we broadcast "MAIN_THREAD_DESTROY_REQUEST" to the javascript CORE
+// in Javascript Core, when we detect that signal.
+// we will either clean up and close up stuff before we call JSCore_Destroy()
+// JSCore_Destroy(), goes to C main, to shut down everything
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//	Experimental function for solving synchronous communication between JavaScript and native code
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// function getSomething() {
-// 	return new Promise((resolve, reject) => {								// Create a Promise to handle the asynchronous response
-// 		const message	= "What's the meaning of life?";
-// 		const eventName = 'CFunctionReturn_js_Call';						// Define a unique event name
-// 		function onEvent(event) {											// Create an event listener for the custom event
-// 			console.log('Event received:', event);							// Log the entire event object
-// 			console.log('Event detail:', event.detail);						// Log the detail attached to the event			
-// 			resolve(event.detail);			
-// 			window.removeEventListener(eventName, onEvent);					// Remove the event listener after receiving the response
-// 		}		
-// 		window.addEventListener(eventName, onEvent);						// Add the event listener
-// 		window.webkit.messageHandlers.js_FuncCall.postMessage(message);		// Send the message to the native code ==> js_FuncCall
-// 	})
-// 	.then(result => {
-// 		console.log('Event received:', result);       
-// 	})
-// 	.catch(error => {														// Handle any errors
-// 		console.error('Error:', error);		
-// 	});
-// }
 
 function Cleanup_Before_Destroy1(){
 	console.log("MAIN_THREAD_DESTROY_REQUEST");
@@ -74,9 +54,9 @@ async function Cleanup_Before_Destroy(){
 	console.log("MAIN_THREAD_DESTROY_REQUEST");
 	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 1");
 	await saveData();
+	flushToilet();
 	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 2");	
-	await releaseObjects();
-	// flushToilet();
+	await releaseObjects();	
 	window.removeEventListener("MAIN_THREAD_DESTROY_REQUEST", Cleanup_Before_Destroy);
 	JSCORE_MessageLog("MAIN_THREAD_DESTROY_REQUEST 3");
 	JSCore_Destroy();	

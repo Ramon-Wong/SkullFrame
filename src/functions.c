@@ -1,35 +1,15 @@
 #include "functions.h"
 
 
-
-
-
 WebKitJavascriptResult * g_result;
 
-static void web_view_javascript_finished(GObject * object, GAsyncResult * result, gpointer user_data){
 
-	JSCValue               *value;
-	GError                 *error = NULL;
 
-	value = webkit_web_view_evaluate_javascript_finish( webview, result, &error);
-	if (!value) {
-		g_warning ("Error running javascript: %s", error->message);
-		g_error_free (error);
-		return;
-	}
-
-	if(jsc_value_is_string(value)){
-		gchar        *str_value = jsc_value_to_string (value);
-		JSCException *exception = jsc_context_get_exception (jsc_value_get_context (value));
-		if (exception)
-			g_warning ("Error running javascript(Exception): %s", jsc_exception_get_message (exception));
-		else
-			g_print ("Script result: %s\n", str_value);
-		g_free (str_value);
-	} else {
-		// g_warning ("Error running javascript(jsc_value_is_string): unexpected return value %s", jsc_value_to_string (value));
-	}
-	webkit_javascript_result_unref (g_result);
+// use this function to inject scripts into main.html, example in my_uri_scheme_request_callback/main.c
+void insert_JSscript( const char * script, const gsize length, WebKitURISchemeRequest* request){
+	GInputStream* stream = g_memory_input_stream_new_from_data( script, length, NULL);
+	webkit_uri_scheme_request_finish( request, stream, length, "application/javascript");
+	g_object_unref(stream);	
 }
 
 
@@ -60,17 +40,15 @@ void JSCORE_MessageLog(WebKitUserContentManager* manager, WebKitJavascriptResult
 void inject_Hook_functions(WebKitWebView * _webview){
 
 	g_print("injecting Hook Functions");
-	initialize_C_Function( _webview, "js_Call",				G_CALLBACK(C_HelloWorld1),		NULL);
-	initialize_C_Function( _webview, "js_FuncCall",			G_CALLBACK(C_HelloWorld2),		NULL);
+	g_signal_connect( window, "delete-event", G_CALLBACK(on_destroy_window), NULL);		
 	initialize_C_Function( _webview, "JSCore_Destroy",		G_CALLBACK(JSCore_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 }
 
-
-const char * insert_JSScript(){
+const char * insert_Functions_JS(){
 	// use for functions.js
 	const char * string =
-	"//For updates, check on the const char * insert_JSScript() in utils.c \n\n"
+	"//For updates, check on the const char * insert_Functions_JS() in utils.c \n\n"
 	"function onDeviceReady(){ console.log('Device is ready'); }"
 	"\n\n"
 	"function onCFunctionReturn(result){"
@@ -80,10 +58,6 @@ const char * insert_JSScript(){
 	"function js_Call(){"
 	"\n	window.webkit.messageHandlers.js_Call.postMessage({});"
 	"\n}"
-	"\n\n"
-	"//function js_DestroyWindow(){"
-	"\n//	window.webkit.messageHandlers.js_DestroyWindow.postMessage({});"
-	"\n//}"
 	"\n\n"
 	"function JSCore_Destroy(){"
 	"\n	window.webkit.messageHandlers.JSCore_Destroy.postMessage({});"
@@ -115,4 +89,14 @@ void SendEventMessage(  const gchar * event_name, const gchar * event_data){
 	gchar* js_code = g_strdup_printf("var event = new CustomEvent('%s', { detail: '%s' }); window.dispatchEvent(event);", event_name, event_data);
 	webkit_web_view_evaluate_javascript( webview, js_code, -1, NULL, NULL, NULL, NULL, NULL);
 	g_free(js_code);
+}
+
+
+gboolean on_destroy_window(  GtkWidget *widget, GdkEvent *event, gpointer user_data) {
+    g_print(">>on_destroy_window<< Window is being destroyed, sending message to JSCore. \n");
+
+	SendEventMessage( "MAIN_THREAD_DESTROY_REQUEST", "MAIN_THREAD_DESTROY_REQUEST");
+	// g_idle_add(quit_main_loop, NULL);
+    // gtk_main_quit();
+	return TRUE;
 } 
