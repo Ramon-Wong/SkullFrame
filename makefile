@@ -15,16 +15,18 @@ ALL_SOURCE		= $(wildcard $(src_dir)/*.c)
 ALL_OBJECTS		= $(patsubst $(src_dir)/%.c, $(obj_dir)/%.o, $(ALL_SOURCE))
 
 TARGET 			= $(obj_dir)/bin/main
+TARGET_SIZE	    = $(shell stat -c%s $(TARGET))
 PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
 
 CONFIG_XML		= config.xml
 
 all:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
-		echo "compile shit"; \
+		echo "compiling and building your shit"; \
 		echo "list of sources: $(ALL_SOURCE)"; \
 		$(CC) $(build) $(TARGET) $(ALL_SOURCE) -I include $(PKG_FLAGS); \
-		echo "..Done!!, run 'make run' to test"; \
+		echo "..Size of $(TARGET) is $$(($(TARGET_SIZE) / 1024)) KBytes"; \
+		echo "..Done!!, run 'make run' to test\n"; \
 	else \
 		echo "One or both of the resources.xml files does not exist."; \
 		echo "please check the resources.xml and build these with"; \

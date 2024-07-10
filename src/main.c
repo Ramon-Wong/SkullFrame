@@ -17,7 +17,7 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 
 	// insert functions.js script into our project..
 	if( g_strcmp0( "/myapp/web/script/functions.js", path) == 0){
-		g_print("\tUsing system js script \n"); 
+		g_print("\tInserting Functions.js script to main.html \n"); 
 
 		insert_JSscript( insert_Functions_JS(), strlen(insert_Functions_JS()), request);
 	}
@@ -33,12 +33,12 @@ void my_uri_scheme_request_callback(WebKitURISchemeRequest* request, gpointer us
 			g_bytes_unref(bytes);
 
 			const gchar* file_extension = get_file_extension(path);
-			if (g_strcmp0(file_extension, "html") == 0) {               mime_type = "text/html";				g_print("HTML");	data_length = strlen(data);
-				} else if (g_strcmp0(file_extension, "js") == 0) {      mime_type = "application/javascript";	g_print("JS");		data_length = strlen(data);
-				} else if (g_strcmp0(file_extension, "css") == 0) {     mime_type = "text/css";					g_print("CSS");		data_length = strlen(data);
-				} else if (g_strcmp0(file_extension, "jpg") == 0 || g_strcmp0(file_extension, "jpeg") == 0) {	g_print("JPEG");
-				} else if (g_strcmp0(file_extension, "png") == 0) {		g_print(" PNG");
-				} else if (g_strcmp0(file_extension, "gif") == 0) {		g_print(" GIF");
+			if (g_strcmp0(file_extension, "html") == 0) {               mime_type = "text/html";				g_print(".HTML");	data_length = strlen(data);
+				} else if (g_strcmp0(file_extension, "js") == 0) {      mime_type = "application/javascript";	g_print(".JS");		data_length = strlen(data);
+				} else if (g_strcmp0(file_extension, "css") == 0) {     mime_type = "text/css";					g_print(".CSS");		data_length = strlen(data);
+				} else if (g_strcmp0(file_extension, "jpg") == 0 || g_strcmp0(file_extension, "jpeg") == 0) {	g_print(".JPEG");
+				} else if (g_strcmp0(file_extension, "png") == 0) {		g_print(".PNG");
+				} else if (g_strcmp0(file_extension, "gif") == 0) {		g_print(".GIF");
 			}
 			g_print("\n");
 		}else{

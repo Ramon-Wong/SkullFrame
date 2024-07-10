@@ -39,7 +39,7 @@ void JSCORE_MessageLog(WebKitUserContentManager* manager, WebKitJavascriptResult
 
 void inject_Hook_functions(WebKitWebView * _webview){
 
-	g_print("injecting Hook Functions");
+	g_print("injecting Hook Functions \n");
 	// connect C main events to functions 
 	g_signal_connect( window, "delete-event", 				G_CALLBACK(on_destroy_window), NULL);
 
