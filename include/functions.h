@@ -28,11 +28,13 @@ const gchar				* Check_resources( GResource *, const gchar *, const gchar *);
 
 void					  inject_Hook_functions(WebKitWebView *);
 int						  ReadXMLConfig(const char *, CONFIG *);
-const char				* insert_JSScript();
+const char				* insert_Functions_JS();
+void					  insert_JSscript(const char * script, const gsize length, WebKitURISchemeRequest* request);
+
 // events
 // void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
 gboolean				  on_destroy_window( GtkWidget *, GdkEvent *, gpointer);
 void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
 void					  SendEventMessage( const gchar *, const gchar *);
-
+						  
 #endif
