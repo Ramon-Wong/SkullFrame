@@ -86,7 +86,6 @@ int main(int argc, char** argv) {
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);
 
 	// Connect the document-loaded signal to the callback function
-
 	gresources = resources_get_resource();
 	g_resources_register(gresources);
 
