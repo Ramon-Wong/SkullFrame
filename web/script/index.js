@@ -1,19 +1,27 @@
 
-document.addEventListener('DOMContentLoaded', () => { 
-	document.getElementById('alertButton').addEventListener('click', () => { 
-		// js_Call();
-		JSCORE_MessageLog("Button 1 smash");
-	});
-});
+
+document.addEventListener('DOMContentLoaded', () => { document.getElementById('alertButton').addEventListener('click', () => { 
+	// js_Call();
+	JSCORE_MessageLog("Button 1 smash");
+});});
 
 
-document.addEventListener('DOMContentLoaded', () => { 
-	document.getElementById('Button2').addEventListener('click', () => { 
-		// js_DestroyWindow();
-		// getSomething();
+document.addEventListener('DOMContentLoaded', () => { document.getElementById('Button2').addEventListener('click', () => { 
 		JSCORE_MessageLog("Button 2 smash");
-	});
-});
+});});
+
+
+document.addEventListener('DOMContentLoaded', () => { document.getElementById("Button3").addEventListener("click", function() {
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("popup").style.display = "block";
+});});
+
+
+document.addEventListener('DOMContentLoaded', () => { document.getElementById("closePopupBtn").addEventListener("click", function() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+});});
+
 
 
 function checkHello(event) {
@@ -107,6 +115,11 @@ async function getSomething() {
 		window.webkit.messageHandlers.js_FuncCall.postMessage(message);
 	});
 }
+
+
+
+
+
 
 // Usage example:
 // (async () => {
