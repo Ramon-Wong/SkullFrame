@@ -82,8 +82,6 @@ int main(int argc, char** argv) {
 		webkit_settings_set_enable_developer_extras(settings, TRUE);
 	}	
  
-	// on_load_changed( webview, , NULL);
-
 	inject_Hook_functions(webview);
 	webkit_web_view_load_uri(webview, Global_Config.uriPath);
 

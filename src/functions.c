@@ -42,6 +42,7 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	g_print("injecting Hook Functions \n");
 	// connect C main events to functions 
 	g_signal_connect( window, "delete-event", 				G_CALLBACK(on_destroy_window), NULL);
+    // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);	
 
 	// bind C functions to JS > window.webkit.messageHandlers.js_Functions.postMessage({}) 
 	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
