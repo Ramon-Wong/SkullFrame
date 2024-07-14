@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => { document.getElementById("B
 });});
 
 document.addEventListener('DOMContentLoaded', () => { document.getElementById("closePopupBtn").addEventListener("click", function() {
+	JSCORE_MessageLog("Smash return");
     document.getElementById('overlay').classList.remove('active');
     document.getElementById('popup').classList.remove('active');	
 });});
@@ -21,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => { document.getElementById("e
 	// bye bye
 	JSCORE_Destroy();	
 });});
-
 
 function checkHello(event) {
 	console.log("Event received: " + event.detail + "/" + Date.now());

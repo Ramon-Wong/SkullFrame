@@ -32,7 +32,7 @@ const char				* insert_Functions_JS();
 void					  insert_JSscript(const char * script, const gsize length, WebKitURISchemeRequest* request);
 
 // events
-// void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
+void					  on_load_changed( WebKitWebView *, WebKitLoadEvent, gpointer);
 gboolean				  on_destroy_window( GtkWidget *, GdkEvent *, gpointer);
 void					  initialize_C_Function(WebKitWebView *, const gchar *, GCallback, gpointer);
 void					  SendEventMessage( const gchar *, const gchar *);

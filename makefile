@@ -20,6 +20,11 @@ PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
 
 CONFIG_XML		= config.xml
 
+# Get the target project folder from the command line
+TARGET_DIR		= $(filter-out $@,$(MAKECMDGOALS))
+
+
+
 all:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \
 		echo "compiling and building your shit"; \
@@ -66,4 +71,3 @@ prepare:
 clean:
 	rm -f $(RESOURCES_C) $(RESOURCES_H)
 	rm -f $(TARGET)
-

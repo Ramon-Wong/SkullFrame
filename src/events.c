@@ -3,6 +3,7 @@
 
 
 void on_load_changed( WebKitWebView *web_view, WebKitLoadEvent load_event, gpointer user_data) {
+	g_print("on load changed");
 
 	if(load_event == WEBKIT_LOAD_STARTED){
 		// seems like we only get this event
