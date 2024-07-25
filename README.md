@@ -1,5 +1,5 @@
 # SkullFrame
-Simple Framework with WebKitGTK and Voodoo, Black Magic, Negromancy, and C
+Simple Framework with WebKitGTK and Voodoo, Black Magic, Necromancy, and C
 
 ## Overview
 SkullFrame is a lightweight and flexible framework designed for integrating web technologies with C applications using WebKitGTK. It allows seamless interaction between JavaScript and C, providing a powerful platform for developing modern, hybrid applications. Leveraging the power of WebKitGTK, SkullFrame offers a straightforward way to create rich web-based user interfaces while maintaining the performance and control of native C code.
