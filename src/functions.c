@@ -13,6 +13,12 @@ void insert_JSscript( const char * script, const gsize length, WebKitURISchemeRe
 }
 
 
+void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	g_print("JSCORE_ReadFile \n");
+	SendEventMessage("Hello_From_C", "Lorem ipsum dolor ahmed,");
+}
+
+
 void JSCORE_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	g_print("JSCORE_Destroy, got your signal from JavaScript\n");
 
@@ -47,6 +53,10 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	// bind C functions to JS > window.webkit.messageHandlers.js_Functions.postMessage({}) 
 	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
+	initialize_C_Function( _webview, "JSCORE_ReadFile",		G_CALLBACK(JSCORE_ReadFile),	NULL);
+	// can we get a C read
+
+
 }
 
 const char * insert_Functions_JS(){
@@ -65,6 +75,10 @@ const char * insert_Functions_JS(){
 	"\n\n"
 	"function JSCORE_MessageLog(msg){"
 	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
+	"\n}"
+	"\n\n"
+	"function JSCORE_ReadFile(){"
+	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage({});"
 	"\n}"
 	"\n\n"
 	"window.onCFunctionReturn = onCFunctionReturn;";
