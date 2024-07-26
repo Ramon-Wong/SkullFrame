@@ -1,27 +1,14 @@
 
 
-document.addEventListener('DOMContentLoaded', () => { document.getElementById('alertButton').addEventListener('click', () => { 
-	JSCORE_MessageLog("Button 1 smash");
-});});
+// group all the button events in the DOMContentLoaded....no need to have several of them in one page.
+document.addEventListener('DOMContentLoaded', () => { 
+	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1 smash");});
+	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2 smash");});
+	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
+	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
+	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye
+});
 
-document.addEventListener('DOMContentLoaded', () => { document.getElementById('Button2').addEventListener('click', () => { 
-		JSCORE_MessageLog("Button 2 smash");
-});});
-
-document.addEventListener('DOMContentLoaded', () => { document.getElementById("Button3").addEventListener("click", function() {
-	Popup_Request();
-});});
-
-document.addEventListener('DOMContentLoaded', () => { document.getElementById("closePopupBtn").addEventListener("click", function() {
-	JSCORE_MessageLog("Smash return");
-    document.getElementById('overlay').classList.remove('active');
-    document.getElementById('popup').classList.remove('active');	
-});});
-
-document.addEventListener('DOMContentLoaded', () => { document.getElementById("exit_destroy").addEventListener("click", function() {
-	// bye bye
-	JSCORE_Destroy();	
-});});
 
 function checkHello(event) {
 	console.log("Event received: " + event.detail + "/" + Date.now());
@@ -56,10 +43,10 @@ function Popup_Request(){
     document.getElementById('popup').classList.add('active');		
 }
 
-//
+function Remove_Popup(){
+	document.getElementById('overlay').classList.remove('active');
+	document.getElementById('popup').classList.remove('active');		
+}
+
 // starting up!
-//
 onDeviceReady();
-
-
-
