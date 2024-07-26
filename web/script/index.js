@@ -56,3 +56,10 @@ function Popup_Request(){
     document.getElementById('popup').classList.add('active');		
 }
 
+//
+// starting up!
+//
+onDeviceReady();
+
+
+
