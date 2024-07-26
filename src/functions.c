@@ -15,7 +15,7 @@ void insert_JSscript( const char * script, const gsize length, WebKitURISchemeRe
 
 void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	g_print("JSCORE_ReadFile \n");
-	SendEventMessage("Hello_From_C", "Lorem ipsum dolor ahmed,");
+	SendEventMessage("hello_world", "DOLOR");
 }
 
 
