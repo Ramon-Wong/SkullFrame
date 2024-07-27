@@ -2,8 +2,8 @@
 
 // group all the button events in the DOMContentLoaded....no need to have several of them in one page.
 document.addEventListener('DOMContentLoaded', () => { 
-	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1 smash"); JSCORE_ReadFile();});
-	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2 smash");});
+	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("Button 1");});
+	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2");});
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
 	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye

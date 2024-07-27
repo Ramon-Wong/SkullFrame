@@ -13,9 +13,35 @@ void insert_JSscript( const char * script, const gsize length, WebKitURISchemeRe
 }
 
 
+void JSCORE_HelloWorld(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	JSCValue * value = webkit_javascript_result_get_js_value(result);
+
+	// step 1, get string from JSCore, done!! and fixed
+	// step 2, send string to JSCore+
+
+	if(jsc_value_is_string(value)){
+		gchar *message = jsc_value_to_string(value);
+		g_print("JSCORE Hello World: %s\n", message);
+
+		g_free(message);
+	}else{
+		g_print("JSCore Hello World Error: Message is not a string.\n");
+	}
+}
+
+
 void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
-	g_print("JSCORE_ReadFile \n");
-	SendEventMessage("hello_world", "DOLOR");
+	JSCValue * value = webkit_javascript_result_get_js_value(result);
+
+	if(jsc_value_is_string(value)){						// Check if the value is a string
+		gchar *message = jsc_value_to_string(value);
+		g_print("JSCORE Message: %s\n", message);
+
+		SendEventMessage("hello_world", "LOREM IPSUM");
+		g_free(message);
+	} else {
+		g_print("JSCore Message Error: Message is not a string.\n");
+	}	
 }
 
 
@@ -54,6 +80,7 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 	initialize_C_Function( _webview, "JSCORE_ReadFile",		G_CALLBACK(JSCORE_ReadFile),	NULL);
+	initialize_C_Function( _webview, "JSCORE_HelloWorld",	G_CALLBACK(JSCORE_HelloWorld),	NULL);
 	// can we get a C read
 
 
@@ -73,12 +100,16 @@ const char * insert_Functions_JS(){
 	"\n	window.webkit.messageHandlers.JSCORE_Destroy.postMessage({});"
 	"\n}"
 	"\n\n"
-	"function JSCORE_MessageLog(msg){"
+	"function JSCORE_MessageLog(msg){			// MessageLog"
 	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_ReadFile(){"
-	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage({});"
+	"function JSCORE_ReadFile(path){			// readfile"
+	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage(path);"
+	"\n}"
+	"\n\n"
+	"function JSCORE_HelloWorld(msg){			// don't forget the parameters for the JS functions"
+	"\n	window.webkit.messageHandlers.JSCORE_HelloWorld.postMessage(msg);"
 	"\n}"
 	"\n\n"
 	"window.onCFunctionReturn = onCFunctionReturn;";
