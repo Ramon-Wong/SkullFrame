@@ -80,4 +80,3 @@ const gchar* Check_resources(  GResource * resources, const gchar *path, const g
 }
 
 
-

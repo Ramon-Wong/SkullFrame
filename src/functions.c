@@ -30,6 +30,38 @@ void JSCORE_HelloWorld(WebKitUserContentManager* manager, WebKitJavascriptResult
 }
 
 
+// void readFile(const char *filename){
+
+// 	FILE *file = fopen(filename, "rb");
+
+// 	if(file == NULL){ perror("Error opening file");	return;}
+
+// 	// Determine the file size
+// 	fseek(file, 0, SEEK_END);
+// 	long fileSize = ftell(file);
+// 	rewind(file);
+
+// 	char *buffer = (char *)malloc(fileSize + 1);			// Allocate memory to contain the whole file
+// 	if(buffer == NULL){
+// 		perror("Memory allocation failed");
+// 		fclose(file);
+// 		return;
+// 	}
+
+// 	size_t bytesRead = fread(buffer, 1, fileSize, file);	// Read the file into the buffer
+// 	if(bytesRead != fileSize){
+// 		perror("Error reading file");
+// 		free(buffer);
+// 		fclose(file);
+// 		return;
+// 	}
+
+// 	buffer[fileSize] = '\0';								// Null-terminate the buffer    
+// 	printf("%s", buffer);									// Process the data read
+// 	free(buffer);											// Clean up
+// 	fclose(file);
+// }
+
 void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	JSCValue * value = webkit_javascript_result_get_js_value(result);
 
@@ -37,7 +69,25 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 		gchar *message = jsc_value_to_string(value);
 		g_print("JSCORE Message: %s\n", message);
 
-		SendEventMessage("hello_world", "LOREM IPSUM");
+		FILE *file = fopen(filename, "rb");
+
+		if(file == NULL){ perror("Error opening file");	return;}
+
+		fseek(file, 0, SEEK_END);	// Determine the file size
+		long fileSize = ftell(file);
+		rewind(file);
+
+		char *buffer = (char *)malloc(fileSize + 1);			// Allocate memory to contain the whole file
+		if(buffer == NULL){	perror("Memory allocation failed");	fclose(file);	return;	}
+
+		size_t bytesRead = fread(buffer, 1, fileSize, file);	// Read the file into the buffer
+		if(bytesRead != fileSize){ perror("Error reading file"); free(buffer); fclose(file); return;}
+
+		buffer[fileSize] = '\0';								// Null-terminate the buffer    
+		SendEventMessage("hello_world", buffer);
+		free(buffer);											// Clean up
+		fclose(file);
+
 		g_free(message);
 	} else {
 		g_print("JSCore Message Error: Message is not a string.\n");
