@@ -22,7 +22,7 @@ void JSCORE_HelloWorld(WebKitUserContentManager* manager, WebKitJavascriptResult
 	if(jsc_value_is_string(value)){
 		gchar *message = jsc_value_to_string(value);
 		g_print("JSCORE Hello World: %s\n", message);
-
+		SendEventMessage("hello_world", "HELLO WORLD, ROFL, ROFL, ROFL!!");
 		g_free(message);
 	}else{
 		g_print("JSCore Hello World Error: Message is not a string.\n");

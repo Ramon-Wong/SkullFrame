@@ -11,11 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function checkHello(event) {
-	console.log("Event received: " + event.detail + "/" + Date.now());
-	// alert("Event received: " + event.detail);
+	console.log("Event received: " + event.detail);	// use event.detail for the payload.
 }
 
-window.addEventListener("hello_world", checkHello);
+window.addEventListener("hello_world", checkHello);		// Listening for any 'hello_world' event called by JSCore_HelloWorld
 window.addEventListener("WEBKIT_DESTROY",	()=>{	alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
 
 
