@@ -104,15 +104,15 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 			// g_print("%s\n\n", buffer);
 			// buffer[fileSize] = '\0';								// Null-terminate the buffer    
 
-			const char * xml0	= "<note>this is a \n \t \r \\ \\ \\ simple string.this is a simple string.this is a simple string.this is a simple string.this is a simple string.</note>";
+			// const char * xml0	= "<note>this is a \n \t simple string.this is a simple string.this is a simple string.this is a simple string.this is a simple string.</note>";
 			// const char * xml1	= "<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>";
 			// const char * xml2	= "<note>/n/t<to>Tove</to>/n/t<from>Jani</from>/n/t<heading>Reminder</heading>/n/t<body>Don't forget me this weekend!</body>/n</note>/0";
 
+			char * processedString	=  ReplaceSpecialCharacters(xml2);
 			// replaceBackslashes(&xml0);
-			SendEventMessage( event, xml0);
+			SendEventMessage( event, processedString);
 			
-
-			// free(buffer);
+			free(processedString);
 
 			// fclose(file);			
 			g_free(event);
