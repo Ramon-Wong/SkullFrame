@@ -23,6 +23,10 @@ typedef struct{
 extern WebKitWebView	* webview;
 extern GtkWidget		* window;
 
+// basic C utils 
+char 					* ReadFile(const char *);
+char 					* ReplaceSpecialCharacters(const char *);	// replace/convert \n,\t,\r characters to
+
 const gchar				* get_file_extension(const gchar *);
 void					  list_resources( GResource *, const gchar*); 
 const gchar				* Check_resources( GResource *, const gchar *, const gchar *);

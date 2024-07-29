@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
 	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye
-
-	
 });
 
 
@@ -20,8 +18,9 @@ function checkHello(event) {
 // first param is the event name, second is other data we wanna send to the JSCORE_HelloWorld to print.
 
 window.addEventListener("hello_world", checkHello);		// Listening for any 'hello_world' event called by JSCore_HelloWorld
-window.addEventListener("Read_XML", (event) => {	console.log("Read_XML : " + event.detail);});
-window.addEventListener("WEBKIT_DESTROY",	()=>{	alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
+window.addEventListener("Read_XML", 		(event) => {	console.log("Read_XML : \n" + event.detail);});
+window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	console.log("WEBKIT ERROR MESSAGE : " + event.detail);});
+window.addEventListener("WEBKIT_DESTROY",	() =>{			alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
 
 // WEBKIT_LOAD_FINISHED
 // WEBKIT_LOAD_REDIRECTED

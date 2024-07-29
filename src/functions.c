@@ -4,66 +4,6 @@
 WebKitJavascriptResult * g_result;
 
 
-char * ReadFile(const char * path){
-	
-	FILE * tFile = fopen( path, "rt");
-	char * buffer;
-
-	if(tFile){		
-		fseek(tFile , 0 , SEEK_END);
-		int lSize = ftell (tFile);
-		rewind (tFile);		
-		
-		buffer = (char*) malloc(sizeof(char) * (lSize + 1));
-		
-		if(buffer){ 														// Check if memory allocation was successful
-			fread(buffer, 1, lSize, tFile);		buffer[lSize] = '\0';		// Null-terminate the string
-        } else {
-            printf("Memory allocation failed\n");
-        }
-
-		fclose(tFile);		
-		
-	}else{
-		printf("\n\nError at opening file: %s\n", path);
-	}
-
-	return buffer;
-}
-
-
-char * ReplaceSpecialCharacters(const char* str) {
-	if(str == NULL){	printf("The string is NULL.\n"); return NULL; }
-
-	size_t originalLength		= strlen(str);			// First, count the number of special characters
-	size_t newLength			= originalLength;
-
-	for(size_t i = 0; i < originalLength; i++){
-		if(str[i] == '\t' || str[i] == '\n' || str[i] == '\'' || str[i] == '\"') {
-			newLength += 1; 							// Each special character will be replaced by 2 characters
-		}
-    }
-
-    // Allocate memory for the new string
-	char* newStr = (char*)malloc(newLength + 1);		// +1 for the null terminator
-	if(newStr == NULL){	printf("Memory allocation failed\n");return NULL;}
-
-	// Replace special characters
-	size_t j = 0;
-	for(size_t i = 0; i < originalLength; i++) {
-		switch (str[i]) {
-			case '\t':	newStr[j++] = '\\';	newStr[j++] = 't';	break;
-			case '\n':	newStr[j++] = '\\';	newStr[j++] = 'n';	break;
-			case '\'':	newStr[j++] = '\\';	newStr[j++] = '\'';	break;
-			case '\"':	newStr[j++] = '\\';	newStr[j++] = '\"';	break;
-			default:	newStr[j++] = str[i];					break;
-		}
-	}
-
-	newStr[j] = '\0';									// Null-terminate the new string
-
-	return newStr;
-}
 
 
 // use this function to inject scripts into main.html, example in my_uri_scheme_request_callback/main.c
@@ -110,37 +50,23 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 
 			g_print("JSCORE ReadFile: %s / %s \n", event, path);
 
-			// FILE *file = fopen( path, "rb");
-			// if(file == NULL){ 
-			// 	perror("Error opening file");	
-			// 	SendEventMessage( event, "Cannot find or open the file");
-			// 	return;
-			// }
+			char * data 				= ReadFile(path);
 
-			// fseek(file, 0, SEEK_END);	// Determine the file size
-			// long fileSize = ftell(file);
-			// rewind(file);
-			
-			// char *buffer = (char *)malloc(fileSize + 1);			// Allocate memory to contain the whole file
-			// if(buffer == NULL){	perror("Memory allocation failed");	fclose(file);	return;	}
+			if(data){
+				g_print("Sending data non the less");
+				char * processedString	= ReplaceSpecialCharacters(data);
+				SendEventMessage( event, processedString);					// send the processed string
+				free(processedString);										// free the processed string				
+			}else{
+				g_print("can't open or read file\n");
 
-			// size_t bytesRead = fread(buffer, 1, fileSize, file);	// Read the file into the buffer
-			// if(bytesRead != fileSize){ perror("Error reading file"); free(buffer); fclose(file); return;}
-			// g_print("%s\n\n", buffer);
-			// buffer[fileSize] = '\0';								// Null-terminate the buffer    
+				char message[128];
+				sprintf( message, "Cannot open , %s", path);
+				SendEventMessage( event, "NULL");							// for now we just send 'NULL'	remember to use \' or \"
+				SendEventMessage( "WEBKIT_ERROR_MSG", message);				// WEBKIT_ERROR_MSG
+			}
 
-			// const char * xml0	= "<note>this is a \n \t simple string.this is a simple string.this is a simple string.this is a simple string.this is a simple string.</note>";
-			// const char * xml1	= "<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>";
-			// const char * xml2	= "<note>/n/t<to>Tove</to>/n/t<from>Jani</from>/n/t<heading>Reminder</heading>/n/t<body>Don't forget me this weekend!</body>/n</note>/0";
-
-			char * Texts 			= ReadFile(path);
-			char * processedString	= ReplaceSpecialCharacters(Texts);
-
-			// replaceBackslashes(&xml0);
-			SendEventMessage( event, processedString);
-			
-			free(Texts);		// free the stuff we read
-			free(processedString);
+			free(data);														// free the stuff we just read
 
 			// fclose(file);			
 			g_free(event);
@@ -151,40 +77,6 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 		g_print("JSCore ReadFile Error: parameters are not valid.\n");
 	}
 }
-
-
-
-// void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
-// 	JSCValue * value = webkit_javascript_result_get_js_value(result);
-
-// 	if(jsc_value_is_string(value)){						// Check if the value is a string
-// 		gchar *message = jsc_value_to_string(value);
-// 		g_print("JSCORE Message: %s\n", message);
-
-		// FILE *file = fopen(filename, "rb");
-
-		// if(file == NULL){ perror("Error opening file");	return;}
-
-		// fseek(file, 0, SEEK_END);	// Determine the file size
-		// long fileSize = ftell(file);
-		// rewind(file);
-
-		// char *buffer = (char *)malloc(fileSize + 1);			// Allocate memory to contain the whole file
-		// if(buffer == NULL){	perror("Memory allocation failed");	fclose(file);	return;	}
-
-		// size_t bytesRead = fread(buffer, 1, fileSize, file);	// Read the file into the buffer
-		// if(bytesRead != fileSize){ perror("Error reading file"); free(buffer); fclose(file); return;}
-
-		// buffer[fileSize] = '\0';								// Null-terminate the buffer    
-		// SendEventMessage("ReadFile", buffer);
-		// free(buffer);											// Clean up
-		// fclose(file);
-
-// 		g_free(message);
-// 	} else {
-// 		g_print("JSCore Message Error: Message is not a string.\n");
-// 	}	
-// }
 
 
 void JSCORE_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
@@ -224,9 +116,8 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_ReadFile",		G_CALLBACK(JSCORE_ReadFile),	NULL);
 	initialize_C_Function( _webview, "JSCORE_HelloWorld",	G_CALLBACK(JSCORE_HelloWorld),	NULL);
 	// can we get a C read
-
-
 }
+
 
 const char * insert_Functions_JS(){
 	// use for functions.js

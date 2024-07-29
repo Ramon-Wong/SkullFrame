@@ -80,3 +80,61 @@ const gchar* Check_resources(  GResource * resources, const gchar *path, const g
 }
 
 
+char * ReadFile(const char * path){											// this function needs to go to the default utils?
+	FILE * tFile	= fopen( path, "rt");
+	char * buffer	= NULL;
+
+	if(tFile){		
+		fseek(tFile , 0 , SEEK_END);
+		int lSize = ftell (tFile);
+		rewind (tFile);		
+		
+		buffer = (char*) malloc(sizeof(char) * (lSize + 1));
+		
+		if(buffer){ 														// Check if memory allocation was successful
+			fread(buffer, 1, lSize, tFile);		buffer[lSize] = '\0';		// Null-terminate the string
+        } else {
+            printf("Memory allocation failed\n");
+        }
+
+		fclose(tFile);		
+		
+	}else{
+		printf("\n\nError at opening file: %s\n", path);
+	}
+
+	return buffer;
+}
+
+
+char * ReplaceSpecialCharacters(const char* str) {
+	if(str == NULL){	printf("The string is NULL.\n"); return NULL; }
+
+	size_t originalLength		= strlen(str);			// First, count the number of special characters
+	size_t newLength			= originalLength;
+
+	for(size_t i = 0; i < originalLength; i++){
+		if(str[i] == '\t' || str[i] == '\n' || str[i] == '\'' || str[i] == '\"') {
+			newLength += 1; 							// Each special character will be replaced by 2 characters
+		}
+    }
+
+    // Allocate memory for the new string
+	char* newStr = (char*)malloc(newLength + 1);		// +1 for the null terminator
+	if(newStr == NULL){	printf("Memory allocation failed\n");return NULL;}
+
+	// Replace special characters
+	size_t j = 0;
+	for(size_t i = 0; i < originalLength; i++) {
+		switch (str[i]) {
+			case '\t':	newStr[j++] = '\\';	newStr[j++] = 't';	break;
+			case '\n':	newStr[j++] = '\\';	newStr[j++] = 'n';	break;
+			case '\'':	newStr[j++] = '\\';	newStr[j++] = '\'';	break;
+			case '\"':	newStr[j++] = '\\';	newStr[j++] = '\"';	break;
+			default:	newStr[j++] = str[i];					break;
+		}
+	}
+
+	newStr[j] = '\0';									// Null-terminate the new string
+	return newStr;
+}
