@@ -4,7 +4,32 @@
 WebKitJavascriptResult * g_result;
 
 
+char * ReadFile(const char * path){
+	
+	FILE * tFile = fopen( path, "rt");
+	char * buffer;
 
+	if(tFile){		
+		fseek(tFile , 0 , SEEK_END);
+		int lSize = ftell (tFile);
+		rewind (tFile);		
+		
+		buffer = (char*) malloc(sizeof(char) * (lSize + 1));
+		
+		if(buffer){ 														// Check if memory allocation was successful
+			fread(buffer, 1, lSize, tFile);		buffer[lSize] = '\0';		// Null-terminate the string
+        } else {
+            printf("Memory allocation failed\n");
+        }
+
+		fclose(tFile);		
+		
+	}else{
+		printf("\n\nError at opening file: %s\n", path);
+	}
+
+	return buffer;
+}
 
 
 char * ReplaceSpecialCharacters(const char* str) {
@@ -108,10 +133,13 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 			// const char * xml1	= "<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>";
 			// const char * xml2	= "<note>/n/t<to>Tove</to>/n/t<from>Jani</from>/n/t<heading>Reminder</heading>/n/t<body>Don't forget me this weekend!</body>/n</note>/0";
 
-			char * processedString	=  ReplaceSpecialCharacters(xml2);
+			char * Texts 			= ReadFile(path);
+			char * processedString	= ReplaceSpecialCharacters(Texts);
+
 			// replaceBackslashes(&xml0);
 			SendEventMessage( event, processedString);
 			
+			free(Texts);		// free the stuff we read
 			free(processedString);
 
 			// fclose(file);			
