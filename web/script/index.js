@@ -54,3 +54,25 @@ function Remove_Popup(){
 
 // starting up!
 onDeviceReady();
+
+
+
+function JSCORE_ReadFileAsync(event_name, path_of_the_file){
+	return new Promise((resolve, reject) => {
+		JSCORE_ReadFile( event_name, path_of_the_file);
+		window.addEventListener( event_name, 		(event) => {		resolve(event.detail);});	// Resolve with the file content
+        window.addEventListener("WEBKIT_ERROR_MSG",	(event) => {reject(new Error("Error reading file: " + event.detail));});
+    });
+}
+
+async function readFileAsync() {
+    try {
+        const fileContent = await JSCORE_ReadFileAsync("EVENT_THINGS_XML", "test1.xml");
+        console.log("Read_XML:\n", fileContent);
+        // Handle the file content as needed
+    } catch (error) {
+        console.error("Error reading file:", error.message);
+    }
+}
+
+// readFileAsync();						// Call the async function

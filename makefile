@@ -23,7 +23,12 @@ CONFIG_XML		= config.xml
 # Get the target project folder from the command line
 TARGET_DIR		= $(filter-out $@,$(MAKECMDGOALS))
 
-
+help:
+	@echo "help on how to use\n" \
+	"make clean			>> delete the compiled resources (html/javascript/css)\n" \
+	"make all			>> compile/build all the C sources\n" \
+	"make run			>> run the build with the config.xml file\n" \
+	"make valgrind			>> run the application with valgrind for memory leaks\n" \
 
 all:
 	@if [ -f $(RESOURCES_C) ] && [ -f $(RESOURCES_H) ]; then \

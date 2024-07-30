@@ -53,15 +53,12 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 			char * data 				= ReadFile(path);
 
 			if(data){
-				g_print("Sending data non the less");
 				char * processedString	= ReplaceSpecialCharacters(data);
 				SendEventMessage( event, processedString);					// send the processed string
 				free(processedString);										// free the processed string				
 			}else{
-				g_print("can't open or read file\n");
-
 				char message[128];
-				sprintf( message, "Cannot open , %s", path);
+				sprintf( message, "{\"event\":\"%s\", \"path\":\"%s\", \"reasons\": \"cannot open/read requested file\"}", event, path);
 				SendEventMessage( event, "NULL");							// for now we just send 'NULL'	remember to use \' or \"
 				SendEventMessage( "WEBKIT_ERROR_MSG", message);				// WEBKIT_ERROR_MSG
 			}
