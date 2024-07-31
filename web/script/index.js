@@ -3,7 +3,7 @@
 // group all the button events in the DOMContentLoaded....no need to have several of them in one page.
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("hello_world", "is_this_hello_world");});
-	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); JSCORE_ReadFile("Read_XML", "test1.xml");});
+	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); console.log( readFile("READ_XML", "test.xml"));});
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
 	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function checkHello(event) {
-	console.log("Event received: " + event.detail);	// use event.detail for the payload.
+	console.log("Event received: " + event.detail);	// use event.detail for the payload @ line 14
 }
 
 // How JSCORE_HelloWorld works now? 	JSCORE_HelloWorld("hello_world", "is_this_hello_world");
@@ -19,7 +19,14 @@ function checkHello(event) {
 
 window.addEventListener("hello_world", checkHello);		// Listening for any 'hello_world' event called by JSCore_HelloWorld
 window.addEventListener("Read_XML", 		(event) => {	console.log("Read_XML : \n" + event.detail);});
-window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	console.log("WEBKIT ERROR MESSAGE : " + event.detail);});
+// window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	
+// 	const Object = JSON.parse(event.detail);
+
+// 	console.log("event:" + Object.event);
+// 	console.log("path:" + Object.event);
+// 	console.log("reasons:" + Object.reason);
+// });
+
 window.addEventListener("WEBKIT_DESTROY",	() =>{			alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
 
 // WEBKIT_LOAD_FINISHED
@@ -40,8 +47,6 @@ window.addEventListener("MAIN_THREAD_DESTROY_REQUEST",  ()=>{	Popup_Request();})
 // we will either clean up and close up stuff before we call JSCore_Destroy()
 // JSCore_Destroy(), goes to C main, to shut down everything
 
-
-
 function Popup_Request(){
     document.getElementById('overlay').classList.add('active');
     document.getElementById('popup').classList.add('active');		
@@ -56,23 +61,25 @@ function Remove_Popup(){
 onDeviceReady();
 
 
+function readFileAsync(event_name, file_path) {
+	return new Promise((resolve, reject) => {						// Add event listeners for success and error
+		window.addEventListener( event_name,		(event) => {	if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });
+		window.addEventListener("WEBKIT_ERROR_MSG",	(event) => {	
+			const errObj = JSON.parse(event.detail);
+			if(errObj.event === event_name){ reject(new Error(errObj.reason));}
+        },{ once: true });
 
-function JSCORE_ReadFileAsync(event_name, path_of_the_file){
-	return new Promise((resolve, reject) => {
-		JSCORE_ReadFile( event_name, path_of_the_file);
-		window.addEventListener( event_name, 		(event) => {		resolve(event.detail);});	// Resolve with the file content
-        window.addEventListener("WEBKIT_ERROR_MSG",	(event) => {reject(new Error("Error reading file: " + event.detail));});
+        JSCORE_ReadFile(event_name, file_path);						// Call the C function
     });
 }
 
-async function readFileAsync() {
-    try {
-        const fileContent = await JSCORE_ReadFileAsync("EVENT_THINGS_XML", "test1.xml");
-        console.log("Read_XML:\n", fileContent);
-        // Handle the file content as needed
-    } catch (error) {
-        console.error("Error reading file:", error.message);
+
+// Example usage of readFileAsync with async/await
+async function readFile( custom_event_name, filepath) {
+	try {
+		const content = await readFileAsync( custom_event_name, filepath);
+		return(content);
+	}catch(error){
+		return("ReadFile ERROR, Event Name:" + custom_event_name + ", Reason: " + error.message);
     }
 }
-
-// readFileAsync();						// Call the async function
