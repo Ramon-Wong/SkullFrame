@@ -3,7 +3,13 @@
 // group all the button events in the DOMContentLoaded....no need to have several of them in one page.
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("hello_world", "is_this_hello_world");});
-	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); console.log( readFile("READ_XML", "test.xml"));});
+	document.getElementById('Button2').addEventListener('click',		() => { 
+		JSCORE_MessageLog("Button 2"); 
+		const file = readFile("READ_XML", "test.xml");
+		file.then((content) => {
+			console.log(content);
+		})
+	});
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
 	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye
@@ -61,17 +67,17 @@ function Remove_Popup(){
 onDeviceReady();
 
 
-function readFileAsync(event_name, file_path) {
-	return new Promise((resolve, reject) => {						// Add event listeners for success and error
-		window.addEventListener( event_name,		(event) => {	if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });
-		window.addEventListener("WEBKIT_ERROR_MSG",	(event) => {	
-			const errObj = JSON.parse(event.detail);
-			if(errObj.event === event_name){ reject(new Error(errObj.reason));}
-        },{ once: true });
+// function readFileAsync(event_name, file_path) {
+// 	return new Promise((resolve, reject) => {						// Add event listeners for success and error
+// 		window.addEventListener( event_name,		(event) => {	if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });
+// 		window.addEventListener("WEBKIT_ERROR_MSG",	(event) => {	
+// 			const errObj = JSON.parse(event.detail);
+// 			if(errObj.event === event_name){ reject(new Error(errObj.reason));}
+//         },{ once: true });
 
-        JSCORE_ReadFile(event_name, file_path);						// Call the C function
-    });
-}
+//         JSCORE_ReadFile(event_name, file_path);						// Call the C function
+//     });
+// }
 
 
 // Example usage of readFileAsync with async/await
@@ -80,6 +86,6 @@ async function readFile( custom_event_name, filepath) {
 		const content = await readFileAsync( custom_event_name, filepath);
 		return(content);
 	}catch(error){
-		return("ReadFile ERROR, Event Name:" + custom_event_name + ", Reason: " + error.message);
+		console.error("ReadFile ERROR, Event Name:" + custom_event_name + ", Reason: " + error.message);
     }
 }
