@@ -18,7 +18,7 @@ function checkHello(event) {
 // first param is the event name, second is other data we wanna send to the JSCORE_HelloWorld to print.
 
 window.addEventListener("hello_world", checkHello);		// Listening for any 'hello_world' event called by JSCore_HelloWorld
-window.addEventListener("Read_XML", 		(event) => {	console.log("Read_XML : \n" + event.detail);});
+// window.addEventListener("Read_XML", 		(event) => {	console.log("Read_XML : \n" + event.detail);});
 // window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	
 // 	const Object = JSON.parse(event.detail);
 
