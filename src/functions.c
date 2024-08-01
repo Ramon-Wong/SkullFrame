@@ -80,7 +80,28 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 void JSCORE_WriteFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	JSCValue * value = webkit_javascript_result_get_js_value(result);
 
+	if(jsc_value_is_array(value)){
+		// How to write onto a file
+		// 1. unique event name
+		// 2. filename.
+		// 3. string/content.
+		// 4. write/append?
 
+		JSCValue * msg1			= jsc_value_object_get_property(value, "0");
+		JSCValue * msg2			= jsc_value_object_get_property(value, "1");
+		JSCValue * msg3			= jsc_value_object_get_property(value, "2");
+		JSCValue * msg4			= jsc_value_object_get_property(value, "3");
+
+		if(jsc_value_is_string(msgValue1) && jsc_value_is_string(msgValue2) && jsc_value_is_string(msgValue3) && jsc_value_is_string(msgValue4)){
+
+			gchar values[4]			= {	jsc_value_to_string(msg1),
+										jsc_value_to_string(msg2),
+										jsc_value_to_string(msg3),
+										jsc_value_to_string(msg4)};
+
+			g_print("WriteFile: %s // %s // %s // %s", values[0], values[1], values[2], values[3]);
+		}
+	}
 }
 
 
