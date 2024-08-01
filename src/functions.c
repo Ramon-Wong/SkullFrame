@@ -84,6 +84,7 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 		// 1. unique event name
 		// 2. filename.
 		// 3. string/content.
+
 		JSCValue * msgvalue[]		= { jsc_value_object_get_property(value, "0"),
 										jsc_value_object_get_property(value, "1"),
 										jsc_value_object_get_property(value, "2")};
@@ -98,10 +99,10 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 			FILE * file = fopen( strMessage[1], "w");
 			if(file != NULL){
 
-				fprintf( file, values[2]);
-				SendEventMessage( values[0], "Stuff being written");			// send the processed string
+				fprintf( file,"%s", strMessage[2]);
+				SendEventMessage( strMessage[0], "Stuff being written");			// send the processed string
 				fclose(file);
-				
+
 			}else{
 				char message[128];
 
