@@ -77,6 +77,13 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 }
 
 
+void JSCORE_WriteFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	JSCValue * value = webkit_javascript_result_get_js_value(result);
+
+
+}
+
+
 void JSCORE_Destroy(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	g_print("JSCORE_Destroy, got your signal from JavaScript\n");
 
