@@ -92,12 +92,12 @@ void JSCORE_WriteFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 		JSCValue * msg3			= jsc_value_object_get_property(value, "2");
 		JSCValue * msg4			= jsc_value_object_get_property(value, "3");
 
-		if(jsc_value_is_string(msgValue1) && jsc_value_is_string(msgValue2) && jsc_value_is_string(msgValue3) && jsc_value_is_string(msgValue4)){
+		if(jsc_value_is_string(msg1) && jsc_value_is_string(msg2) && jsc_value_is_string(msg3) && jsc_value_is_string(msg4)){
 
-			gchar values[4]			= {	jsc_value_to_string(msg1),
-										jsc_value_to_string(msg2),
-										jsc_value_to_string(msg3),
-										jsc_value_to_string(msg4)};
+			gchar * values[4]			= {	jsc_value_to_string(msg1),
+											jsc_value_to_string(msg2),
+											jsc_value_to_string(msg3),
+											jsc_value_to_string(msg4)};
 
 			g_print("WriteFile: %s // %s // %s // %s", values[0], values[1], values[2], values[3]);
 		}
@@ -140,6 +140,7 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 	initialize_C_Function( _webview, "JSCORE_ReadFile",		G_CALLBACK(JSCORE_ReadFile),	NULL);
+	initialize_C_Function( _webview, "JSCORE_WriteFile",	G_CALLBACK(JSCORE_WriteFile),	NULL);
 	initialize_C_Function( _webview, "JSCORE_HelloWorld",	G_CALLBACK(JSCORE_HelloWorld),	NULL);
 	// can we get a C read
 }
@@ -159,15 +160,26 @@ const char * insert_Functions_JS(){
 	"\n	window.webkit.messageHandlers.JSCORE_Destroy.postMessage({});"
 	"\n}"
 	"\n\n"
-	"function JSCORE_MessageLog(msg){				// MessageLog"
+	"function JSCORE_MessageLog(msg){							// MessageLog"
 	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_ReadFile(event, path){			// readfile"
+	"function JSCORE_HelloWorld(event, msg){		// don't forget the parameters for the JS functions"
+	"\n	window.webkit.messageHandlers.JSCORE_HelloWorld.postMessage([event, msg]);"
+	"\n}"
+	"\n\n"
+	"function JSCORE_ReadFile(event, path){						// readfile"
 	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage([event, path]);"
 	"\n}"
 	"\n\n"
-	"function readFileAsync(event_name, file_path) {	// Read file asynchronously"
+	"function JSCORE_WriteFile(value1, value2, value3, value4){	// Writefile, testing purposes"
+	"\n	window.webkit.messageHandlers.JSCORE_WriteFile.postMessage([value1, value2, value3, value4]);"
+	"\n}"
+	"\n\n"
+	"\n\n"
+	"\n\n"
+	"\n\n"
+	"function readFileAsync(event_name, file_path) {			// Read file asynchronously"
 	"\n	return new Promise((resolve, reject) => {	// Add event listeners for success and error and make promises"
 	"\n		window.addEventListener( event_name, (event) => { if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });"
 	"\n		window.addEventListener(\"WEBKIT_ERROR_MSG\", (event) => {"
@@ -176,10 +188,6 @@ const char * insert_Functions_JS(){
 	"\n		},{ once: true });"
 	"\n		JSCORE_ReadFile(event_name, file_path);	// Call the C function"
     "\n	});"
-	"\n}"
-	"\n\n"
-	"function JSCORE_HelloWorld(event, msg){		// don't forget the parameters for the JS functions"
-	"\n	window.webkit.messageHandlers.JSCORE_HelloWorld.postMessage([event, msg]);"
 	"\n}"
 	"\n\n"
 	"window.onCFunctionReturn = onCFunctionReturn;";
