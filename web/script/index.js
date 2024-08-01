@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("hello_world", "is_this_hello_world");});
 	// document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); readFile("READ_XML", "test.xml");});
 	document.getElementById('Button2').addEventListener('click',		
-		() => { JSCORE_MessageLog("Button 2"); JSCORE_WriteFile("WRITE_TEST", "test00.text", "test1", "w");}
+		() => { JSCORE_MessageLog("Button 2"); JSCORE_PrintFile("WRITE_TEST", "test00.text", "lorem ipsum");}
 	);
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
@@ -23,13 +23,11 @@ function checkHello(event) {
 window.addEventListener("hello_world", checkHello);		// Listening for any 'hello_world' event called by JSCore_HelloWorld
 window.addEventListener("WRITE_TEST", 		(event) => {	console.log("WRITE_TEST : \n" + event.detail);});
 // window.addEventListener("Read_XML", 		(event) => {	console.log("Read_XML : \n" + event.detail);});
-// window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	
-// 	const Object = JSON.parse(event.detail);
-
-// 	console.log("event:" + Object.event);
-// 	console.log("path:" + Object.event);
-// 	console.log("reasons:" + Object.reason);
-// });
+window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	
+	const Object = JSON.parse(event.detail);
+	console.log("event:" + Object.event);
+	console.log("reasons:" + Object.reason);
+});
 
 window.addEventListener("WEBKIT_DESTROY",	() =>{			alert("This is an alert box!"); console.log("WEBKIT_DESTROY");});
 

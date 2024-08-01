@@ -58,7 +58,6 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 				free(processedString);										// free the processed string				
 			}else{
 				char message[128];
-									
 				sprintf( message, "{\"event\": \"%s\", \"path\": \"%s\", \"reason\": \"Cannot open or read from the filepath\"}", event, path);
 				SendEventMessage( event, "NULL");							// for now we just send 'NULL'	remember to use \' or \"
 				SendEventMessage( "WEBKIT_ERROR_MSG", message);				// WEBKIT_ERROR_MSG
@@ -85,30 +84,39 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 		// 1. unique event name
 		// 2. filename.
 		// 3. string/content.
+		JSCValue * msgvalue[]		= { jsc_value_object_get_property(value, "0"),
+										jsc_value_object_get_property(value, "1"),
+										jsc_value_object_get_property(value, "2")};
 
-		JSCValue * msg1			= jsc_value_object_get_property(value, "0");
-		JSCValue * msg2			= jsc_value_object_get_property(value, "1");
-		JSCValue * msg3			= jsc_value_object_get_property(value, "2");
+		if(jsc_value_is_string(msgvalue[0]) && jsc_value_is_string(msgvalue[1]) && jsc_value_is_string(msgvalue[2])){
+			gchar * strMessage[]	= {	jsc_value_to_string(msgvalue[0]),		// event
+										jsc_value_to_string(msgvalue[1]),		// path/file
+										jsc_value_to_string(msgvalue[2])};		// content/data
 
-		if(jsc_value_is_string(msg1) && jsc_value_is_string(msg2) && jsc_value_is_string(msg3))){
-
-			gchar * values[4]			= {	jsc_value_to_string(msg1),
-											jsc_value_to_string(msg2),
-											jsc_value_to_string(msg3)};
-
-			g_print("WriteFile: %s // %s // %s // %s", values[0], values[1], values[2]);
-			//	values[0]	event name
-			//	values[1]	path	
-			//	values[2]	content	
-
-			FILE * file = fopen(values[1], values[3]);
+			g_print("JSCore PrintFile %s. is a go", strMessage[0]);
+			
+			FILE * file = fopen( strMessage[1], "w");
 			if(file != NULL){
 
+				fprintf( file, values[2]);
+				SendEventMessage( values[0], "Stuff being written");			// send the processed string
 				fclose(file);
+				
 			}else{
-				g_print("JSCore WriteFile Error: parameters are not valid.\n");
+				char message[128];
+
+				g_print("JSCore PrintFile Error: cannot open file/no write access");
+				sprintf( message, "{\"event\": \"%s\", \"reason\": \"cannot open file/no write access\"}", strMessage[0]);
+				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
 			}
 
+			SendEventMessage( strMessage[0], "SUCCESS");
+		}else{
+			char message[128];
+
+			g_print("JSCore PrintFile Error: insufficient/invalid parameters. needed => [event_name, file_name, content]");	
+			sprintf( message, "{\"event\": \"UNKNOWN_EVENT\", \"reason\": \"insufficient/invalid parameters. needed => [event_name, file_name, content]\"}");
+			SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
 		}
 	}
 }
