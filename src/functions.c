@@ -77,7 +77,7 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 }
 
 
-void JSCORE_WriteFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	JSCValue * value = webkit_javascript_result_get_js_value(result);
 
 	if(jsc_value_is_array(value)){
@@ -85,21 +85,30 @@ void JSCORE_WriteFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 		// 1. unique event name
 		// 2. filename.
 		// 3. string/content.
-		// 4. write/append?
 
 		JSCValue * msg1			= jsc_value_object_get_property(value, "0");
 		JSCValue * msg2			= jsc_value_object_get_property(value, "1");
 		JSCValue * msg3			= jsc_value_object_get_property(value, "2");
-		JSCValue * msg4			= jsc_value_object_get_property(value, "3");
 
-		if(jsc_value_is_string(msg1) && jsc_value_is_string(msg2) && jsc_value_is_string(msg3) && jsc_value_is_string(msg4)){
+		if(jsc_value_is_string(msg1) && jsc_value_is_string(msg2) && jsc_value_is_string(msg3))){
 
 			gchar * values[4]			= {	jsc_value_to_string(msg1),
 											jsc_value_to_string(msg2),
-											jsc_value_to_string(msg3),
-											jsc_value_to_string(msg4)};
+											jsc_value_to_string(msg3)};
 
-			g_print("WriteFile: %s // %s // %s // %s", values[0], values[1], values[2], values[3]);
+			g_print("WriteFile: %s // %s // %s // %s", values[0], values[1], values[2]);
+			//	values[0]	event name
+			//	values[1]	path	
+			//	values[2]	content	
+
+			FILE * file = fopen(values[1], values[3]);
+			if(file != NULL){
+
+				fclose(file);
+			}else{
+				g_print("JSCore WriteFile Error: parameters are not valid.\n");
+			}
+
 		}
 	}
 }
@@ -140,7 +149,7 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
 	initialize_C_Function( _webview, "JSCORE_ReadFile",		G_CALLBACK(JSCORE_ReadFile),	NULL);
-	initialize_C_Function( _webview, "JSCORE_WriteFile",	G_CALLBACK(JSCORE_WriteFile),	NULL);
+	initialize_C_Function( _webview, "JSCORE_PrintFile",	G_CALLBACK(JSCORE_PrintFile),	NULL);
 	initialize_C_Function( _webview, "JSCORE_HelloWorld",	G_CALLBACK(JSCORE_HelloWorld),	NULL);
 	// can we get a C read
 }
@@ -172,8 +181,8 @@ const char * insert_Functions_JS(){
 	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage([event, path]);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_WriteFile(value1, value2, value3, value4){	// Writefile, testing purposes"
-	"\n	window.webkit.messageHandlers.JSCORE_WriteFile.postMessage([value1, value2, value3, value4]);"
+	"function JSCORE_PrintFile(value1, value2, value3){	// Writefile, testing purposes"
+	"\n	window.webkit.messageHandlers.JSCORE_PrintFile.postMessage([value1, value2, value3]);"
 	"\n}"
 	"\n\n"
 	"\n\n"

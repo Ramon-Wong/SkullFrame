@@ -4,7 +4,9 @@
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("hello_world", "is_this_hello_world");});
 	// document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); readFile("READ_XML", "test.xml");});
-	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); JSCORE_WriteFile("READ_XML", "test.xml", "test1", "test3");});
+	document.getElementById('Button2').addEventListener('click',		
+		() => { JSCORE_MessageLog("Button 2"); JSCORE_WriteFile("WRITE_TEST", "test00.text", "test1", "w");}
+	);
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
 	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye
@@ -19,6 +21,7 @@ function checkHello(event) {
 // first param is the event name, second is other data we wanna send to the JSCORE_HelloWorld to print.
 
 window.addEventListener("hello_world", checkHello);		// Listening for any 'hello_world' event called by JSCore_HelloWorld
+window.addEventListener("WRITE_TEST", 		(event) => {	console.log("WRITE_TEST : \n" + event.detail);});
 // window.addEventListener("Read_XML", 		(event) => {	console.log("Read_XML : \n" + event.detail);});
 // window.addEventListener("WEBKIT_ERROR_MSG", (event) => {	
 // 	const Object = JSON.parse(event.detail);
