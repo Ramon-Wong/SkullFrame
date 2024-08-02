@@ -20,8 +20,11 @@ PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
 
 CONFIG_XML		= config.xml
 
+JQUERY_URL		= https://unpkg.com/jquery@3.6.0/dist/jquery.min.js
+
 # Get the target project folder from the command line
 TARGET_DIR		= $(filter-out $@,$(MAKECMDGOALS))
+
 
 help:
 	@echo "help on how to use\n" \
@@ -75,3 +78,15 @@ prepare:
 clean:
 	rm -f $(RESOURCES_C) $(RESOURCES_H)
 	rm -f $(TARGET)
+
+example:
+	@echo "why me? $(arg1)"
+    ifeq ($(arg1), jquery)
+		@echo "Downloading ⏳ jQuery..."
+    else ifeq ($(arg1), react)
+		@echo "Downloading ⏳ REACT..."
+    else
+		@echo "No valid argument provided. No download."
+    endif
+	@echo "Check on download file"
+
