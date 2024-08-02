@@ -85,6 +85,7 @@ example1:
 	@echo "why me? $(arg1)"
     ifeq ($(arg1), jquery)
 		@echo "Downloading ⏳ jQuery..."
+		curl -o ./web/script/jquery.js $(JQUERY_URL)
     else ifeq ($(arg1), react)
 		@echo "Downloading ⏳ REACT..."
     else
@@ -97,6 +98,8 @@ example2:
 	@echo "why me again? $(arg1)"
 	@if [ $(arg1) = "bacon" ]; then \
 		echo "You and I are friends!!"; \
+	elif [ "$(arg1)" = "burger" ]; then \
+		echo "Maybe"; \
 	else \
 		echo "We are not brothers"; \
 	fi; \
