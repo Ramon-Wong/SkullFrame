@@ -21,6 +21,8 @@ PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
 CONFIG_XML		= config.xml
 
 JQUERY_URL		= https://unpkg.com/jquery@3.6.0/dist/jquery.min.js
+REACT_URL		= https://unpkg.com/react@16.14.0/umd/react.production.min.js
+REACT_DOM_URL	= https://unpkg.com/react-dom@16.14.0/umd/react-dom.production.min.js
 
 # Get the target project folder from the command line
 TARGET_DIR		= $(filter-out $@,$(MAKECMDGOALS))
@@ -79,7 +81,7 @@ clean:
 	rm -f $(RESOURCES_C) $(RESOURCES_H)
 	rm -f $(TARGET)
 
-example:
+example1:
 	@echo "why me? $(arg1)"
     ifeq ($(arg1), jquery)
 		@echo "Downloading ⏳ jQuery..."
@@ -90,3 +92,11 @@ example:
     endif
 	@echo "Check on download file"
 
+
+example2:
+	@echo "why me again? $(arg1)"
+	@if [ $(arg1) = "bacon" ]; then \
+		echo "You and I are friends!!"; \
+	else \
+		echo "We are not brothers"; \
+	fi; \
