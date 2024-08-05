@@ -97,8 +97,6 @@ int main(int argc, char** argv) {
 		default:
 			g_print("Unknown hardware acceleration policy.\n");
 		}
-
-		g_object_unref(settings);
 	}	
  
 	inject_Hook_functions(webview);
