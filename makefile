@@ -27,6 +27,7 @@ REACT_DOM_URL	= https://unpkg.com/react-dom@16.14.0/umd/react-dom.production.min
 # Get the target project folder from the command line
 TARGET_DIR		= $(filter-out $@,$(MAKECMDGOALS))
 
+FILE_C_EXISTS	= $(shell test -f $(RESOURCES_C) && echo yes || echo no)
 
 help:
 	@echo "help on how to use\n" \
@@ -85,9 +86,18 @@ example1:
 	@echo "why me? $(arg1)"
     ifeq ($(arg1), jquery)
 		@echo "Downloading ⏳ jQuery..."
-		curl -o ./web/script/jquery.js $(JQUERY_URL)
+		# curl -o ./web/script/jquery/jquery.js $(JQUERY_URL)
     else ifeq ($(arg1), react)
 		@echo "Downloading ⏳ REACT..."
+		# curl -o ./web/script/react.production.min.js $(REACT_URL)
+		# curl -o ./web/script/react-dom.production.min.js $(REACT_DOM_URL)
+    else ifeq ($(arg1), exist)
+		@echo "detecting ⏳ file..."
+        ifeq ($(FILE_C_EXISTS), yes)
+		@echo "using FILE_C_EXISTS but positive..."
+        else
+		@echo "using FILE_C_EXISTS but negative..."
+        endif
     else
 		@echo "No valid argument provided. No download."
     endif

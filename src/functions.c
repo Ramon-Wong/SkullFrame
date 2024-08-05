@@ -54,16 +54,16 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 
 			if(data){
 				char * processedString	= ReplaceSpecialCharacters(data);
-				SendEventMessage( event, processedString);					// send the processed string
-				free(processedString);										// free the processed string				
+				SendEventMessage( event, processedString);							// send the processed string
+				free(processedString);												// free the processed string				
 			}else{
 				char message[128];
 				sprintf( message, "{\"event\": \"%s\", \"path\": \"%s\", \"reason\": \"Cannot open or read from the filepath\"}", event, path);
-				SendEventMessage( event, "NULL");							// for now we just send 'NULL'	remember to use \' or \"
-				SendEventMessage( "WEBKIT_ERROR_MSG", message);				// WEBKIT_ERROR_MSG
+				SendEventMessage( event, "NULL");									// for now we just send 'NULL'	remember to use \' or \"
+				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
 			}
 
-			free(data);														// free the stuff we just read
+			free(data);																// free the stuff we just read
 
 			// fclose(file);			
 			g_free(event);
@@ -90,9 +90,9 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 										jsc_value_object_get_property(value, "2")};
 
 		if(jsc_value_is_string(msgvalue[0]) && jsc_value_is_string(msgvalue[1]) && jsc_value_is_string(msgvalue[2])){
-			gchar * strMessage[]	= {	jsc_value_to_string(msgvalue[0]),		// event
-										jsc_value_to_string(msgvalue[1]),		// path/file
-										jsc_value_to_string(msgvalue[2])};		// content/data
+			gchar * strMessage[]	= {	jsc_value_to_string(msgvalue[0]),			// event
+										jsc_value_to_string(msgvalue[1]),			// path/file
+										jsc_value_to_string(msgvalue[2])};			// content/data
 
 			g_print("JSCore PrintFile %s. is a go", strMessage[0]);
 			
@@ -111,6 +111,9 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
 			}
 
+			g_free(strMessage[0]);
+			g_free(strMessage[1]);
+			g_free(strMessage[2]);
 			SendEventMessage( strMessage[0], "SUCCESS");
 		}else{
 			char message[128];
