@@ -70,5 +70,15 @@ async function readFile( custom_event_name, filepath) {
 		console.log(content);
 	}catch(error){
 		console.error("ReadFile ERROR, Event Name:" + custom_event_name + ", Reason: " + error.message);
-    }
+	}
+}
+
+
+async function printFile( custom_event_name, filepath, data) {
+	try {
+		const content = await writeFileAsync( custom_event_name, filepath, data);
+		console.log(content);
+	}catch(error){
+		console.error("ReadFile ERROR, Event Name:" + custom_event_name + ", Reason: " + error.message);
+	}
 }
