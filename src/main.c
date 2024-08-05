@@ -78,8 +78,27 @@ int main(int argc, char** argv) {
 	
 	// Check if Developer mode is enable
 	if(Global_Config.developerEnabled == 1){
-		WebKitSettings *settings = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
+		WebKitSettings *settings					= webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
 		webkit_settings_set_enable_developer_extras(settings, TRUE);
+
+    	WebKitHardwareAccelerationPolicy policy		= webkit_settings_get_hardware_acceleration_policy(settings);
+		g_print("Checking Hardware Acceleration Policies \n");
+
+    	switch (policy) {
+        case WEBKIT_HARDWARE_ACCELERATION_POLICY_ALWAYS:
+			g_print("Hardware acceleration is always enabled.\n");
+			break;
+		case WEBKIT_HARDWARE_ACCELERATION_POLICY_ON_DEMAND:
+			g_print("Hardware acceleration is enabled on demand.\n");
+			break;
+		case WEBKIT_HARDWARE_ACCELERATION_POLICY_NEVER:
+			g_print("Hardware acceleration is disabled.\n");
+			break;
+		default:
+			g_print("Unknown hardware acceleration policy.\n");
+		}
+
+		g_object_unref(settings);
 	}	
  
 	inject_Hook_functions(webview);
