@@ -16,7 +16,7 @@ ALL_OBJECTS		= $(patsubst $(src_dir)/%.c, $(obj_dir)/%.o, $(ALL_SOURCE))
 
 TARGET 			= $(obj_dir)/bin/main
 TARGET_SIZE	    = $(shell stat -c%s $(TARGET))
-PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0`
+PKG_FLAGS		= `pkg-config --cflags --libs gtk+-3.0 webkit2gtk-4.0 libxml-2.0 glib-2.0`
 
 CONFIG_XML		= config.xml
 
@@ -28,6 +28,7 @@ REACT_DOM_URL	= https://unpkg.com/react-dom@16.14.0/umd/react-dom.production.min
 TARGET_DIR		= $(filter-out $@,$(MAKECMDGOALS))
 
 FILE_C_EXISTS	= $(shell test -f $(RESOURCES_C) && echo yes || echo no)
+VALGRIND_PARAM  = --tool=memcheck --leak-check=full --leak-resolution=high --track-origins=yes --num-callers=20 --log-file=vgdump --smc-check=all --trace-children=yes
 
 help:
 	@echo "help on how to use\n" \
@@ -68,7 +69,14 @@ source:
 	done
 
 valgrind:
+	@echo "agruments: $(arg1)"
+    ifeq ($(arg1), deep)
+	@echo "Starting valgrind, deep check"
+	valgrind $(VALGRIND_PARAM) $(TARGET) $(CONFIG_XML)
+    else	
+	@echo "Starting valgrind, regular quick check"
 	valgrind $(TARGET) $(CONFIG_XML)
+    endif 
 
 object:
 	@echo $(OBJECTS)

@@ -37,6 +37,44 @@ void JSCORE_HelloWorld(WebKitUserContentManager* manager, WebKitJavascriptResult
 }
 
 
+void JSCORE_Get_File_Content(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+
+	JSCValue * value = webkit_javascript_result_get_js_value(result);
+
+	if(jsc_value_is_array(value)){
+		JSCValue * msgValue1			= jsc_value_object_get_property(value, "0");
+		JSCValue * msgValue2			= jsc_value_object_get_property(value, "1");
+
+		if(jsc_value_is_string(msgValue1) && jsc_value_is_string(msgValue2)){
+			gchar * 	event				= jsc_value_to_string(msgValue1);
+			gchar * 	path				= jsc_value_to_string(msgValue2);
+			gchar * 	contents;
+			gsize		length;
+			GError *	error				= NULL;
+
+			g_print("JSCORE ReadFile: %s / %s \n", event, path);
+
+			if( g_file_get_contents( path, &contents, &length, &error)) {
+				char * processedString	= ReplaceSpecialCharacters(content);
+    			g_print("%s", processedString);										// Use the contents (contents is a null-terminated string)
+				SendEventMessage( event, processedString);							// send the processed string				
+    			g_free(contents);  													// Free the memory when done
+			} else {
+				g_error_free(error);												// Handle the error
+			}
+
+
+
+			g_free(event);
+			g_free(path);
+		}
+
+	}else{
+		g_print("JSCore ReadFile Error: parameters are not valid.\n");
+	}
+}
+
+
 void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 	JSCValue * value = webkit_javascript_result_get_js_value(result);
 
@@ -94,7 +132,7 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 										jsc_value_to_string(msgvalue[1]),			// path/file
 										jsc_value_to_string(msgvalue[2])};			// content/data
 
-			g_print("JSCore PrintFile %s. is a go", strMessage[0]);
+			g_print("JSCore PrintFile %s ...done", strMessage[0]);
 			
 			FILE * file = fopen( strMessage[1], "w");
 			if(file != NULL){
@@ -102,7 +140,7 @@ void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult*
 				fprintf( file,"%s", strMessage[2]);
 				SendEventMessage( strMessage[0], "Stuff being written");			// send the processed string
 				fclose(file);
-
+				SendEventMessage( strMessage[0], "Done");							// done
 			}else{
 				char message[128];
 
@@ -158,11 +196,12 @@ void inject_Hook_functions(WebKitWebView * _webview){
     // g_signal_connect( webview, "load-changed", G_CALLBACK(on_load_changed), NULL);	
 
 	// bind C functions to JS > window.webkit.messageHandlers.js_Functions.postMessage({}) 
-	initialize_C_Function( _webview, "JSCORE_Destroy",		G_CALLBACK(JSCORE_Destroy),		NULL);
-	initialize_C_Function( _webview, "JSCORE_MessageLog",	G_CALLBACK(JSCORE_MessageLog),	NULL);
-	initialize_C_Function( _webview, "JSCORE_ReadFile",		G_CALLBACK(JSCORE_ReadFile),	NULL);
-	initialize_C_Function( _webview, "JSCORE_PrintFile",	G_CALLBACK(JSCORE_PrintFile),	NULL);
-	initialize_C_Function( _webview, "JSCORE_HelloWorld",	G_CALLBACK(JSCORE_HelloWorld),	NULL);
+	initialize_C_Function( _webview, "JSCORE_Destroy",			G_CALLBACK(JSCORE_Destroy),				NULL);
+	initialize_C_Function( _webview, "JSCORE_MessageLog",		G_CALLBACK(JSCORE_MessageLog),			NULL);
+	initialize_C_Function( _webview, "JSCORE_ReadFile",			G_CALLBACK(JSCORE_ReadFile),			NULL);
+	initialize_C_Function( _webview, "JSCORE_Get_File_Content",	G_CALLBACK(JSCORE_Get_File_Content),	NULL);
+	initialize_C_Function( _webview, "JSCORE_PrintFile",		G_CALLBACK(JSCORE_PrintFile),			NULL);
+	initialize_C_Function( _webview, "JSCORE_HelloWorld",		G_CALLBACK(JSCORE_HelloWorld),			NULL);
 	// can we get a C read
 }
 

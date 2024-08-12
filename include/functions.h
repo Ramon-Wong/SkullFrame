@@ -4,6 +4,7 @@
 #include <webkit2/webkit2.h>
 #include <JavaScriptCore/JavaScript.h>
 #include <gtk/gtk.h>
+#include <glib.h>
 #include <stdlib.h>
 #include <string.h>
 

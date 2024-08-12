@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("hello_world", "is_this_hello_world");});
 	// document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); readFile("READ_XML", "test.xml");});
 	document.getElementById('Button2').addEventListener('click',		
-		() => { JSCORE_MessageLog("Button 2"); JSCORE_PrintFile("WRITE_TEST", "test00.text", "lorem ipsum dolor....sumething, sumthing");}
+		() => { JSCORE_MessageLog("Button 2"); 
+				// JSCORE_PrintFile("WRITE_TEST", "test00.text", "lorem ipsum dolor....sumething, sumthing");
+				printFile("WRITE_TEST01", "test01.txt", "lorem ipsum dolor....sumething, sumthing and more somethign something");
+		}
 	);
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
@@ -76,7 +79,7 @@ async function readFile( custom_event_name, filepath) {
 
 async function printFile( custom_event_name, filepath, data) {
 	try {
-		const content = await writeFileAsync( custom_event_name, filepath, data);
+		const content = await printFileAsync( custom_event_name, filepath, data);
 		console.log(content);
 	}catch(error){
 		console.error("ReadFile ERROR, Event Name:" + custom_event_name + ", Reason: " + error.message);
