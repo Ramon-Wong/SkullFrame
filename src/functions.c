@@ -52,25 +52,27 @@ void JSCORE_Get_File_Content(WebKitUserContentManager* manager, WebKitJavascript
 			gsize		length;
 			GError *	error				= NULL;
 
-			g_print("JSCORE ReadFile: %s / %s \n", event, path);
+			g_print("JSCore Get_File_Content: %s / %s \n", event, path);
 
 			if( g_file_get_contents( path, &contents, &length, &error)) {
-				char * processedString	= ReplaceSpecialCharacters(content);
+				char * processedString	= ReplaceSpecialCharacters(contents);
     			g_print("%s", processedString);										// Use the contents (contents is a null-terminated string)
 				SendEventMessage( event, processedString);							// send the processed string				
     			g_free(contents);  													// Free the memory when done
 			} else {
+				char message[128];
+				sprintf( message, "{\"event\": \"%s\", \"path\": \"%s\", \"reason\": \"Cannot open or read from the filepath\"}", event, path);
+				SendEventMessage( event, "NULL");									// for now we just send 'NULL'	remember to use \' or \"
+				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG	
 				g_error_free(error);												// Handle the error
 			}
-
-
 
 			g_free(event);
 			g_free(path);
 		}
 
 	}else{
-		g_print("JSCore ReadFile Error: parameters are not valid.\n");
+		g_print("JSCore Get_File_Content Error: parameters are not valid.\n");
 	}
 }
 
@@ -112,6 +114,51 @@ void JSCORE_ReadFile(WebKitUserContentManager* manager, WebKitJavascriptResult* 
 		g_print("JSCore ReadFile Error: parameters are not valid.\n");
 	}
 }
+
+
+
+void JSCORE_Set_File_Content(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
+	JSCValue * value = webkit_javascript_result_get_js_value(result);
+
+	if(jsc_value_is_array(value)){
+		// How to write onto a file
+		// 1. unique event name
+		// 2. filename.
+		// 3. string/content.
+
+		JSCValue * msgvalue[]		= { jsc_value_object_get_property(value, "0"),
+										jsc_value_object_get_property(value, "1"),
+										jsc_value_object_get_property(value, "2")};
+
+		if(jsc_value_is_string(msgvalue[0]) && jsc_value_is_string(msgvalue[1]) && jsc_value_is_string(msgvalue[2])){
+			gchar	* strMessage[]	= {	jsc_value_to_string(msgvalue[0]),			// event
+										jsc_value_to_string(msgvalue[1]),			// path/file
+										jsc_value_to_string(msgvalue[2])};			// content/data
+			GError	* error			= NULL;
+
+			g_print("JSCore PrintFile %s ...done", strMessage[0]);
+			
+			if(!g_file_set_contents( strMessage[1], strMessage[2], -1, &error)) {
+				char message[128];
+				g_print("JSCore file_set_content Error");	
+				sprintf( message, "{\"event\": \"%s\", \"reason\": \"error at function g_file_set_contents\"}",  strMessage[0]);
+				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
+    			g_error_free(error);
+			}
+
+			g_free(strMessage[0]);
+			g_free(strMessage[1]);
+			g_free(strMessage[2]);
+			SendEventMessage( strMessage[0], "SUCCESS");
+		}else{
+			char message[128];
+			g_print("JSCore file_set_content Error: insufficient/invalid parameters. needed => [event_name, file_name, content]");	
+			sprintf( message, "{\"event\": \"UNKNOWN_EVENT\", \"reason\": \"insufficient/invalid parameters. needed => [event_name, file_name, content]\"}");
+			SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
+		}
+	}
+}
+
 
 
 void JSCORE_PrintFile(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
@@ -200,6 +247,7 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_MessageLog",		G_CALLBACK(JSCORE_MessageLog),			NULL);
 	initialize_C_Function( _webview, "JSCORE_ReadFile",			G_CALLBACK(JSCORE_ReadFile),			NULL);
 	initialize_C_Function( _webview, "JSCORE_Get_File_Content",	G_CALLBACK(JSCORE_Get_File_Content),	NULL);
+	initialize_C_Function( _webview, "JSCORE_Set_File_Content",	G_CALLBACK(JSCORE_Set_File_Content),	NULL);
 	initialize_C_Function( _webview, "JSCORE_PrintFile",		G_CALLBACK(JSCORE_PrintFile),			NULL);
 	initialize_C_Function( _webview, "JSCORE_HelloWorld",		G_CALLBACK(JSCORE_HelloWorld),			NULL);
 	// can we get a C read
@@ -224,7 +272,7 @@ const char * insert_Functions_JS(){
 	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_HelloWorld(event, msg){		// don't forget the parameters for the JS functions"
+	"function JSCORE_HelloWorld(event, msg){					// don't forget the parameters for the JS functions"
 	"\n	window.webkit.messageHandlers.JSCORE_HelloWorld.postMessage([event, msg]);"
 	"\n}"
 	"\n\n"
@@ -232,19 +280,27 @@ const char * insert_Functions_JS(){
 	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage([event, path]);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_PrintFile(value1, value2, value3){	// Writefile, testing purposes"
+	"function JSCORE_Get_File_Content(event, path){				// readfile"
+	"\n	window.webkit.messageHandlers.JSCORE_Get_File_Content.postMessage([event, path]);"
+	"\n}"
+	"\n\n"
+	"function JSCORE_Set_File_Content(value1, value2, value3){	// Writefile"
+	"\n	window.webkit.messageHandlers.JSCORE_Set_File_Content.postMessage([value1, value2, value3]);"
+	"\n}"
+	"\n\n"
+	"function JSCORE_PrintFile(value1, value2, value3){			// Writefile, testing purposes"
 	"\n	window.webkit.messageHandlers.JSCORE_PrintFile.postMessage([value1, value2, value3]);"
 	"\n}"
 	"\n\n\n\n"
-	"\n\n\n\n"
-	"function readFileAsync(event_name, file_path) {					// Read file asynchronously"
-	"\n	return new Promise((resolve, reject) => {						// Add event listeners for success and error and make promises"
+	"function readFileAsync(event_name, file_path) {			// Read file asynchronously"
+	"\n	return new Promise((resolve, reject) => {				// Add event listeners for success and error and make promises"
 	"\n		window.addEventListener( event_name, (event) => { if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });"
 	"\n		window.addEventListener(\"WEBKIT_ERROR_MSG\", (event) => {"
 	"\n			const errObj = JSON.parse(event.detail);"
 	"\n			if(errObj.event === event_name){ reject(new Error(errObj.reason));}"
 	"\n		},{ once: true });"
-	"\n		JSCORE_ReadFile(event_name, file_path);						// Call the C function"
+	"\n		//JSCORE_ReadFile(event_name, file_path);						// Call the C function"
+	"\n		JSCORE_Get_File_Content(event_name, file_path);						// Call the C function"
     "\n	});"
 	"\n}"
 	"\n\n"

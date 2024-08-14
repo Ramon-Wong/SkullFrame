@@ -3,13 +3,13 @@
 // group all the button events in the DOMContentLoaded....no need to have several of them in one page.
 document.addEventListener('DOMContentLoaded', () => { 
 	document.getElementById('alertButton').addEventListener('click',	() => { JSCORE_MessageLog("Button 1"); JSCORE_HelloWorld("hello_world", "is_this_hello_world");});
-	// document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); readFile("READ_XML", "test.xml");});
-	document.getElementById('Button2').addEventListener('click',		
-		() => { JSCORE_MessageLog("Button 2"); 
-				// JSCORE_PrintFile("WRITE_TEST", "test00.text", "lorem ipsum dolor....sumething, sumthing");
-				printFile("WRITE_TEST01", "test01.txt", "lorem ipsum dolor....sumething, sumthing and more somethign something");
-		}
-	);
+	document.getElementById('Button2').addEventListener('click',		() => { JSCORE_MessageLog("Button 2"); readFile("READ_XML", "test.xml");});
+	// document.getElementById('Button2').addEventListener('click',		
+	// 	() => { JSCORE_MessageLog("Button 2"); 
+	// 			// JSCORE_PrintFile("WRITE_TEST", "test00.text", "lorem ipsum dolor....sumething, sumthing");
+	// 			printFile("WRITE_TEST01", "test01.txt", "lorem ipsum dolor....sumething, sumthing and more somethign something");
+	// 	}
+	// );
 	document.getElementById("Button3").addEventListener("click", 		() => { Popup_Request()});
 	document.getElementById("closePopupBtn").addEventListener("click",	() => {	JSCORE_MessageLog("Smash return");	Remove_Popup();});
 	document.getElementById("exit_destroy").addEventListener("click",	() => {	JSCORE_Destroy();	});// bye bye
