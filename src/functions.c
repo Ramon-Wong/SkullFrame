@@ -36,7 +36,7 @@ void JSCORE_HelloWorld(WebKitUserContentManager* manager, WebKitJavascriptResult
 	}
 }
 
-
+//todo...check if reading non existing file
 void JSCORE_Get_File_Content(WebKitUserContentManager* manager, WebKitJavascriptResult* result, gpointer user_data){
 
 	JSCValue * value = webkit_javascript_result_get_js_value(result);
@@ -61,6 +61,7 @@ void JSCORE_Get_File_Content(WebKitUserContentManager* manager, WebKitJavascript
     			g_free(contents);  													// Free the memory when done
 			} else {
 				char message[128];
+				g_print("JSCore file_get_contents Error");					
 				sprintf( message, "{\"event\": \"%s\", \"path\": \"%s\", \"reason\": \"Cannot open or read from the filepath\"}", event, path);
 				SendEventMessage( event, "NULL");									// for now we just send 'NULL'	remember to use \' or \"
 				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG	
@@ -139,8 +140,8 @@ void JSCORE_Set_File_Content(WebKitUserContentManager* manager, WebKitJavascript
 			g_print("JSCore PrintFile %s ...done", strMessage[0]);
 			
 			if(!g_file_set_contents( strMessage[1], strMessage[2], -1, &error)) {
-				char message[128];
-				g_print("JSCore file_set_content Error");	
+				char message[128];				
+				g_print("JSCore file_set_contents Error");	
 				sprintf( message, "{\"event\": \"%s\", \"reason\": \"error at function g_file_set_contents\"}",  strMessage[0]);
 				SendEventMessage( "WEBKIT_ERROR_MSG", message);						// WEBKIT_ERROR_MSG
     			g_error_free(error);
@@ -246,9 +247,9 @@ void inject_Hook_functions(WebKitWebView * _webview){
 	initialize_C_Function( _webview, "JSCORE_Destroy",			G_CALLBACK(JSCORE_Destroy),				NULL);
 	initialize_C_Function( _webview, "JSCORE_MessageLog",		G_CALLBACK(JSCORE_MessageLog),			NULL);
 	initialize_C_Function( _webview, "JSCORE_ReadFile",			G_CALLBACK(JSCORE_ReadFile),			NULL);
+	initialize_C_Function( _webview, "JSCORE_PrintFile",		G_CALLBACK(JSCORE_PrintFile),			NULL);
 	initialize_C_Function( _webview, "JSCORE_Get_File_Content",	G_CALLBACK(JSCORE_Get_File_Content),	NULL);
 	initialize_C_Function( _webview, "JSCORE_Set_File_Content",	G_CALLBACK(JSCORE_Set_File_Content),	NULL);
-	initialize_C_Function( _webview, "JSCORE_PrintFile",		G_CALLBACK(JSCORE_PrintFile),			NULL);
 	initialize_C_Function( _webview, "JSCORE_HelloWorld",		G_CALLBACK(JSCORE_HelloWorld),			NULL);
 	// can we get a C read
 }
@@ -268,50 +269,50 @@ const char * insert_Functions_JS(){
 	"\n	window.webkit.messageHandlers.JSCORE_Destroy.postMessage({});"
 	"\n}"
 	"\n\n"
-	"function JSCORE_MessageLog(msg){							// MessageLog"
+	"function JSCORE_MessageLog(msg){									// MessageLog"
 	"\n	window.webkit.messageHandlers.JSCORE_MessageLog.postMessage(msg);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_HelloWorld(event, msg){					// don't forget the parameters for the JS functions"
+	"function JSCORE_HelloWorld(event, msg){							// don't forget the parameters for the JS functions"
 	"\n	window.webkit.messageHandlers.JSCORE_HelloWorld.postMessage([event, msg]);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_ReadFile(event, path){						// readfile"
+	"function JSCORE_ReadFile(event, path){								// readfile"
 	"\n	window.webkit.messageHandlers.JSCORE_ReadFile.postMessage([event, path]);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_Get_File_Content(event, path){				// readfile"
+	"function JSCORE_Get_File_Content(event, path){						// readfile"
 	"\n	window.webkit.messageHandlers.JSCORE_Get_File_Content.postMessage([event, path]);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_Set_File_Content(value1, value2, value3){	// Writefile"
+	"function JSCORE_Set_File_Content(value1, value2, value3){			// Writefile"
 	"\n	window.webkit.messageHandlers.JSCORE_Set_File_Content.postMessage([value1, value2, value3]);"
 	"\n}"
 	"\n\n"
-	"function JSCORE_PrintFile(value1, value2, value3){			// Writefile, testing purposes"
+	"function JSCORE_PrintFile(value1, value2, value3){					// Writefile, testing purposes"
 	"\n	window.webkit.messageHandlers.JSCORE_PrintFile.postMessage([value1, value2, value3]);"
 	"\n}"
 	"\n\n\n\n"
-	"function readFileAsync(event_name, file_path) {			// Read file asynchronously"
-	"\n	return new Promise((resolve, reject) => {				// Add event listeners for success and error and make promises"
+	"function readFileAsync(event_name, file_path) {					// Read file asynchronously"
+	"\n	return new Promise((resolve, reject) => {						// Add event listeners for success and error and make promises"
 	"\n		window.addEventListener( event_name, (event) => { if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });"
 	"\n		window.addEventListener(\"WEBKIT_ERROR_MSG\", (event) => {"
 	"\n			const errObj = JSON.parse(event.detail);"
 	"\n			if(errObj.event === event_name){ reject(new Error(errObj.reason));}"
 	"\n		},{ once: true });"
-	"\n		//JSCORE_ReadFile(event_name, file_path);						// Call the C function"
-	"\n		JSCORE_Get_File_Content(event_name, file_path);						// Call the C function"
+	"\n		//JSCORE_ReadFile(event_name, file_path);					// Call the C function"
+	"\n		JSCORE_Get_File_Content(event_name, file_path);				// Call the C function"
     "\n	});"
 	"\n}"
 	"\n\n"
-	"function printFileAsync(event_name, file_path, data) {              // Print file asynchronously"
+	"function printFileAsync(event_name, file_path, data) {             // Print file asynchronously"
 	"\n	return new Promise((resolve, reject) => {                       // Add event listeners for success and error and make promises"
 	"\n		window.addEventListener( event_name, (event) => { if(event.detail !== 'NULL'){resolve(event.detail);}}, { once: true });"
 	"\n		window.addEventListener(\"WEBKIT_ERROR_MSG\", (event) => {"
 	"\n	    	const errObj = JSON.parse(event.detail);"
 	"\n			if(errObj.event === event_name){ reject(new Error(errObj.reason));}"
 	"\n		},{ once: true });"
-	"\n		JSCORE_PrintFile(event_name, file_path, data);              // Call the C function"
+	"\n		JSCORE_Set_File_Content(event_name, file_path, data);		// Call the C function"
 	"\n	});"
 	"\n}"
 	"\n\n"	
